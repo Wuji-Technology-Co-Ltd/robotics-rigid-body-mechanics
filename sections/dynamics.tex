@@ -1,0 +1,460 @@
+\documentclass[12pt, a4paper, article, UTF8]{ctexart}
+\usepackage[subpreambles=true]{standalone}
+\usepackage{import}
+\begin{document}
+\section{单个刚体的动力学}
+\subsection{章节小节}
+\subsection{质心}
+\subsubsection{质心}
+在中学研究力对有质量物体的作用时，我们会把质量视作一个点，即质点。质点的线速度的加速度收合外力而改变。这种将有质量物体视为质点的分析方法是一种等效思维。在刚体中，质量不再是一个集中的点，由分散的质量构成的一个集合。分散的质量可以被认为是离散的，即由有限个小的质点（比如说微观粒子）组成。
+
+我们之前在分析螺旋理论的时候提出了刚体上的任意一点，或者与刚体同步的空间中的任意一点，只要知道了这一点的旋动，即可知道整个刚体上任意一点的运动状态。那么我们就面临着选择哪一点作为我们研究的对象的问题。显然，这个点对我们来说应当是方便的，并且具有一定的物理意义。
+
+若稍有常识和直觉应该意识到，这个点就应该是刚体的质心（center of mass，或简写作COM）。质心理应当是刚体质量分布的几何中心。因此对于一个由$n$个离散的质点（或有质量粒子）组成的刚体，对于第$i$个质点的质量为$m_i\in\mathbb{R}$，并且在某个参照系中的坐标为$\mathbf{r}_i\in\mathbb{R}^3$，我们定义质心为当参照系原点位于质心时，有
+\begin{align}
+\sum^{n}_{i=1} = m_i\mathbf{r}_i = \mathbf{0}
+\end{align}
+
+这样构建的质心的本质其实是重量分布的加权平均值（weighted sum of mass distribution）。而且我们注意到质心的定义是一个质量关于位置的线性组合，而非其他诸如倒数、平方的组合。线性组合是最适合质量与力的关系的，因为力矩与位置也是线性的关系，两者都是线性关系就会为力矩的处理提供便利。在后续分析中我们会进一步认识质心的定义对分析的帮助和影响。[图]注意“\centerofmass ”这个符号，我们会用这个符号表示center of mass的位置。
+
+\subsubsection{关于质心的性质}
+\begin{mydefinition}
+对于一个由$n$个离散的质点（或有质量粒子）组成的刚体，对于第$i$个质点的质量为$m_i\in\mathbb{R}$，并且在某个参照系中的坐标为$\mathbf{r}_i\in\mathbb{R}^3$，我们定义质心为当参照系原点位于质心时，有
+\begin{align*}
+\sum^{n}_{i=1} = m_i\mathbf{r}_i = \mathbf{0}
+\end{align*}
+并且此时刚体的质量为
+\begin{align*}
+m = \sum^{n}_{i=1} m_i
+\end{align*}
+\end{mydefinition}
+
+\begin{mytheorem}
+质心存在性：对于一个刚体，质心一定存在。
+\end{mytheorem}
+
+\begin{mytheorem}
+质心唯一性：一个刚体有且只有一个质心。
+\end{mytheorem}
+
+\begin{mytheorem}
+当刚体绕某确定方向的螺旋轴发生旋转时，螺旋轴过质心时，旋转动能最小。
+\end{mytheorem}
+
+
+\subsection{螺旋理论中的力螺旋}
+\subsubsection{力螺旋}
+我们知道，力是改变物体运动状态，使物体产生加速度的原因。既然我们在螺旋理论的框架下描述了空间中物体的运动状态，那对于改变物体运动状态的力也应当有对应螺旋理论框架下的描述。
+
+我们知道，在力的作用下，刚体会产生加速度。在力矩的作用下，刚体会产生角加速度。如果我们只是分析力对刚体的影响，那一切都会变得很简单，因为这时我们只要直接默认力作用于质心，然后按照向量求和将力的效果叠加就行。复杂的是力矩，因为力矩的大小不仅取决于力本身，还取决于力作用的位置。而力和力矩又不能分开讨论，两者是同时出现的。
+
+由上述对力的讨论，我们可以总结：力具有以下的固有属性：
+\begin{enumerate}
+\item 具有方向性
+\item 力的作用可以叠加
+\item 一个力的效果作用于有且只有一个点
+\end{enumerate}
+其中力的方向性以及可叠加性非常符合直觉。对于力的效果作用于有且只有一个点，我们要解释一下。首先我们考虑刚体受力的一个情形：有一根针戳刚体，针对刚体施加了力，那么此时毫无疑问，力作用于针与刚体的接触点，力的作用点有且只有一个。当然这个情形是非常简单的，甚至是有些理想化的。现实发生的情况远比这复杂。比如说，力往往作用于连续的整体，比如一个面或一个体积。作用于一个面的例子比如说一个正方体在平面上摩擦，收到的摩擦力就是作用于整个平面的。作用于一个体积的例子比如说物体处于力场之中，比如说重力场或者磁场。此时整个体积都会受到力的效果。实际上，在材料学中，很少会有对力的讨论，而是直接讨论应力（stress），而应力的单位是MPa，本身就意味着力是作用于一个连续区域而非一个点。
+
+那么考虑这些情况，我们还能认为力的效果还能被认为是作用于有且只有一个点吗？答案是肯定的。以重力为例，我们从来都是认为重力可以被等效为一个作用于质心的力，而实际情况是重力均等地作用于位于重力场中刚体的每个部分。如果我们看一个更一般的例子，假设有两个作用于刚体的不同位置点（位置点一般是直接位于刚体的实物上，因为刚体中力的传递需要是有质量的实体）的两个力，表达在位于刚体质心的机体坐标系$\{\text{b}\}$，记作$\mathbf{f}^{{}_{(3)}}_\text{b1},\mathbf{f}^{{}_{(3)}}_\text{b2}\in\mathbb{R}^3$，其作用点记作$\mathbf{r}_\text{b1}, \mathbf{r}_{b2}$。由于$\{\text{b}\}$位于刚体质心，那么我们不难得到，这两个力对刚体的力矩为
+\begin{align}
+\textbf{\texttau}_\text{b1} = \mathbf{r}_\text{b1} \times \mathbf{f}^{{}_{(3)}}_\text{b1} \nonumber \\
+\textbf{\texttau}_\text{b2} = \mathbf{r}_\text{b2} \times \mathbf{f}^{{}_{(3)}}_\text{b2} 
+\end{align}
+那么显然，对于刚体，收到了两个力和两个力矩的叠加效果为
+\begin{align}
+\textbf{\texttau}_\text{b} = \mathbf{r}_\text{b1} + \mathbf{r}_\text{b2} \\
+\mathbf{f}^{{}_{(3)}}_\text{b} = \mathbf{f}^{{}_{(3)}}_\text{b1}  +\mathbf{f}^{{}_{(3)}}_\text{b2}
+\end{align}
+我们通过几何分析是可以知道存在且有唯一$\mathbf{r}_\text{b}$，使得
+\begin{align}
+\textbf{\texttau}_\text{b} = \mathbf{r}_\text{b} \times \mathbf{f}^{{}_{(3)}}_\text{b} \label{eq:sumofforce}
+\end{align}
+式子(\ref{eq:sumofforce})成立的。具体存在性的证明会在之后给出。
+
+也就是说，任何两个力的效果的叠加是也可以被视作作用于一点。而任何对刚体的力的效果不论是作用于点、平面还是体积，都可以被视作为多个力的效果的叠加，因此可以被等效为作用于一点的力和对应力矩。
+
+参考我们表示旋动分为两部分，角速度和线速度，并且对于螺旋轴的位置并没有直接体现在旋动当中，而是通过参照系的原点的线速度来间接体现的。以同样的思路，我们构建螺旋理论框架下的力的表示。如果刚体上一个力作用于机体参照系$\{\text{b}\}$所对应的刚体。这个力起名为$\vec{\text{b}}$，意为作用于$\{\text{b}\}$所对应的刚体的某个力。并且作用力作用于于点Q，点Q在任意参照系$\{\text{a}\}$下记作$\mathbf{r}^\text{a}_{\vec{\text{b}}}$，力在$\{\text{a}\}$下表达下记作$\mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}}}$，则有力矩$\textbf{\texttau}_{\vec{\text{b}}}^\text{a}$
+\begin{align}
+\textbf{\texttau}_{\vec{\text{b}}}^\text{a} = \mathbf{r}^\text{a}_{\vec{\text{b}}} \times \mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}}}
+\end{align}
+我们把$\textbf{\texttau}_{\vec{\text{b}}}^\text{a}$和$\mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}}}$如同旋动$\mathbf{u}$一样打包，记作$\mathbf{f}_{\vec{\text{b}}}^{\,\text{a}}\in\mathbb{R}^6$，称为力螺旋，并且称$\textbf{\texttau}^{\text{a}}_{\vec{\text{b}}}$为螺旋力矩，则有
+\begin{align}
+\mathbf{f}_{\vec{\text{b}}}^{\,\text{a}} = \begin{bmatrix}
+\textbf{\texttau}_{\vec{\text{b}}}^\text{a} \\  \mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}}}
+\end{bmatrix} \label{eq:wrenchdef}
+\end{align}
+注意区别力矩和螺旋力矩的区别，螺旋力矩是我们在构建力螺旋中的特有产物，而平时所说的力矩通常而言都是有非常显然的旋转轴的而不需要去强调位置对力矩的影响。
+
+要验证我们对力螺旋的构建是否合理，我们可以通过能量守恒定律。即我们期望
+\begin{align}
+\mathbf{f}^{\,\text{a}}_{\vec{\text{b}}} \cdot \mathbf{u}_\text{ab}^{\text{a}} = \mathbf{f}^{\,\text{b}}_{\vec{\text{b}}} \cdot\mathbf{u}_\text{ab}^\text{b}
+\end{align}
+那么我们试图计算$\mathbf{f} \cdot\mathbf{u}$，考虑式子(\ref{eq:screwrepresentation})，有
+\begin{align}
+\mathbf{f}\cdot\mathbf{u} &= (\mathbf{r} \times \mathbf{f}^{\,{(3)}}) \cdot \mathbf{w}+ \mathbf{f}^{\,{(3)}} \cdot (h\mathbf{w}+\mathbf{q} \times \mathbf{w}) \nonumber \\
+&= \mathbf{f}^{\,{(3)}}\cdot (\mathbf{w} \times \mathbf{r}) - \mathbf{f}^{\,{(3)}} \cdot (\mathbf{w} \times \mathbf{q}) + h\mathbf{f}^{\,{(3)}} \cdot \mathbf{w} \nonumber \\
+&= \mathbf{f}^{\,{(3)}} \cdot (\mathbf{w} \times (\mathbf{r}-\mathbf{q})) + h\mathbf{f}^{\,{(3)}} \cdot \mathbf{w} \nonumber \\
+&= \mathbf{w} \cdot ((\mathbf{r}-\mathbf{q}) \times \mathbf{f}) + h\mathbf{f}^{\,{(3)}} \cdot 
+\mathbf{w} \label{eq:conserveenergy}
+\end{align}
+式子(\ref{eq:conserveenergy})中的$\mathbf{r}$是参照系的原点到力的作用点的距离（不是螺旋轴到参照系的半径），$\mathbf{q}$是参照系原点到刚体螺旋轴的距离。我们注意到式子(\ref{eq:conserveenergy})中的$\mathbf{r}-\mathbf{q}$正是力的作用点到螺旋轴的距离，而$(\mathbf{r}-\mathbf{q}) \times \mathbf{f}$真是力对螺旋轴产生的力矩。这些物理量不随着参照系的改变而改变，因此无论在什么参照系下表达力螺旋，都符合能量守恒。因此，式子(\ref{eq:wrenchdef})中对力螺旋的定义是合理的。
+
+实际上我们可以通过根据能量守恒去构建力螺旋，即通过式子(\ref{eq:conserveenergy})得到式子(\ref{eq:wrenchdef})。具体来说，我们通过在任意参照系描述平移速度与螺旋力所形成的功，以及角速度与螺旋力矩形成的功，两者相加，然后去推螺旋力矩的半径$\mathbf{r}$即可得到式子(\ref{eq:wrenchdef})。
+
+螺旋理论中的旋动的一大意义是为了转换参照系的方便，那么力螺旋也应当同旋动一起，能在不同参照系下转换。考虑到$\mathbf{f}\cdot \mathbf{u} = \mathbf{u}^T \mathbf{f}$以及性质\ref{th:twistchangeframe}，有
+\begin{align}
+(\mathbf{u}_\text{ab}^\text{a})^T \mathbf{f}_{\vec{\text{b}}}^{\,\text{a}} = (\mathbf{u}_\text{ab}^\text{b})^T \mathbf{f}_{\vec{\text{b}}}^{\,\text{b}} =
+([\text{Ad}_{T_\text{ba}}]\mathbf{u}_\text{ab}^\text{a})^T \mathbf{f}_{\vec{\text{b}}}^{\,\text{b}} \label{eq:conservationofenergywrench}  \\
+ =(\mathbf{u}_{\text{ab}}^\text{a})^T  [\text{Ad}_{T_\text{ba}}]^T\mathbf{f}_{\vec{\text{b}}}^{\,\text{b}}
+ \label{eq:wrenchchangeframeproof}
+\end{align}
+因此，由式子(\ref{eq:wrenchchangeframeproof})可得
+\begin{align}
+\mathbf{f}_{\vec{\text{b}}}^{\,\text{a}} =  [\text{Ad}_{T_\text{ba}}]^T\mathbf{f}_{\vec{\text{b}}}^{\,\text{b}} \label{eq:wrenchchangeframeresult}
+\end{align}
+
+我们需要注意式子(\ref{eq:wrenchchangeframeresult})的适用范围。首先我们要理解式子(\ref{eq:conservationofenergywrench})，因为式子左右两边描述的都是$\{\text{b}\}$相对于$\{\text{a}\}$的速度，所以$\mathbf{u}_\text{ab}^\text{a}$和$\mathbf{u}_\text{ab}^\text{b}$描述的是同一个运动。但是如果描述的不是同一个运动，那式子就不相等了，即
+\begin{align}
+(\mathbf{u}_\text{cb}^\text{a})^T \mathbf{f}_{\vec{\text{b}}}^{\,\text{a}} \neq (\mathbf{u}_\text{ab}^\text{b})^T \mathbf{f}_{\vec{\text{b}}}^{\,\text{b}}
+\end{align}
+这应该很好理解，因为如果$\{\text{c}\}$相对于$\{\text{a}\}$有相对速度，那么能量肯定没法守恒，因为相当于参照系自带一部分动能。不过这并不影响式子(\ref{eq:wrenchchangeframeresult})的正确性。但有一点需要注意的是，式子(\ref{eq:wrenchchangeframeresult})成立的前提是：$\vec{\text{b}}$这个力本身必须是一个来源清楚的、由于物质之间相互作用产生的实质力（real force），比如电磁力、重力，或者这些实质力的合成力。$\vec{\text{b}}$不能是惯性力（inertial force，又称虚拟力，fictitous force）或者任何包括惯性力的合成力，因为惯性力会随着参照系的变化而产生。如果要想式子(\ref{eq:wrenchchangeframeresult})成立，而且$\vec{\text{b}}$又包括惯性力，那么必须有$\mathbf{u}_\text{ab} = \mathbf{0}$。
+
+力螺旋是螺旋理论框架下对力的描述。力螺旋最大的意义在于可以为我们在不同参照系下分析力的效果提供便利。从式子(\ref{eq:wrenchdef})中可以发现，力螺旋中螺旋力矩的大小随着参照系位置变化为变化。这看似是荒谬的，但实际上是合理的。在图[TODO]中，B支点连接基座和连接件1，A支点连接连接件1和连接件2。如果支点A与支点B都是由电机驱动（或阻碍运动），连接件1和连接件2的质量可忽略不计，那么同一个力下，如果要保持两个铰链关节静止不动，支点B的电机所要产生的力矩要比支点A的要大。我们把参照系建在支点A和支点B时，力螺旋中的螺旋力矩部分就应该是不一样的。所以换一个参照系，力矩增加或减小是合理的。正如我们之前所说，力螺旋的意义之一是为切换参照系提供便利。当我们把参照系切换到一个有意义的位置时，力螺旋的物理意义才会体现。我们认为位于螺旋轴和质心就是一些有意义的参照系。其实在一些别的参照系里，力螺旋中螺旋力矩的物理意义是有限的，但只要我们有了随时切换参照系的能力，我们就可以方便的时候来回切换参照系，比如说方便计算、叠加力的效果、测量、理解等，因为会存在方便计算的参照系不一定是方便理解的，方便测量的参照系并不一定是方便计算的等问题。
+
+\subsubsection{力和力螺旋的标记法则}
+由于表示力会涉及到很多因素，因此在此尝试厘清。
+
+\begin{enumerate}
+\item $\mathbf{f}^{\,\text{a}}_{\vec{\text{b}}}$中的$\vec{\text{b}}$意为力螺旋作用于机体参照系$\{\text{b}\}$所代表的刚体上。$\{\text{a}\}$意为这个力螺旋是表达在$\{\text{a}\}$中的。
+\item 对于$\mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}}}$，$\vec{\text{b}}$和$\{\text{a}\}$的意思与力螺旋中一致。$\text{(3)}$代表是三维向量，因此$\mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}}}$表示的是力。
+\item 对于$\textbf{\texttau}^{\text{a}}_{\vec{\text{b}}}$与$\mathbf{f}^{\,\text{a}}_{\vec{\text{b}}}$同理。
+\item 当带有箭头的$\vec{\text{b}}$出现在$\mathbf{f}$的下标时，强调的是某个力（尤其是实质力）的作用。
+\item $\vec{\text{b}_1}$自己可能也会有下标，比如$\mathbf{f}^{\,\text{a}(3)}_{\vec{\text{b}_1}}$，这里的1是为了区分不同对刚体作用的力。
+\item $\mathbf{f}_{\text{ab}}^{\,\text{b}}$中的下标$\text{a}$意为相对于$\{\text{a}\}$，下标中的$\text{b}$意为参照系$\{\text{b}\}$所代表的刚体所受到的力螺旋总和（包括惯性力的影响）。下标$\text{ab}$意思为刚体相对于$\{\text{a}\}$的观察者看到刚体受到的力螺旋的总和。而上标的$\{\text{b}\}$代表这个力螺旋表达在$\{\text{b}\}$中。
+\item $\mathbf{f}$的上标不会表示次幂，如果要表示次幂，一半会写成$\mathbf{f}\cdot \mathbf{f}$或者$(\mathbf{f})^2$
+
+概括来说，下标第一个字母代表观察实体运动的参照系，下标第二字母代表受到力的实体。上标字母代表表示力螺旋的参照系。
+
+由于刚体的运动在不同的参照系下会受到不同的惯性力和对应螺旋力矩，讨论力螺旋总和时必须在下标写出相对于哪个参照系。
+
+\item 上一条原则同样适用于刚体受到的总和螺旋力矩和合外力。
+\end{enumerate}
+
+
+
+
+\subsubsection{力螺旋的性质}
+\begin{mytheorem}
+作用于刚体的分别作用于两个点的力，这两个力的合成效果可以被等效为作用于某一个点的一个力和对应力矩。这个力或力矩作用位置存在且唯一。
+\end{mytheorem}
+
+\begin{mytheorem}
+作用于刚体的力的集合的效果可以被等效为作用于某一个点的一个力和对应力矩。
+\end{mytheorem}
+
+\begin{mydefinition}
+定义\textbf{实质力}（real force）为由于物质之间相互作用的力，比如电磁力或重力或者他们的合成力。定义\textbf{惯性力}（inertial force，又称虚拟力，fictitious force）为参照系相对另一个参照系的运动导致的，但不影响在惯性参照系中刚体的运动模式的力。
+\end{mydefinition}
+
+\begin{mydefinition}
+任意性参照系$\{\textnormal{a}\}$中，对刚体作用于一点的实质力$\vec{\textnormal{b}}$，在$\{\textnormal{a}\}$中记作$\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}\textnormal{(3)}}\in\mathbb{R}^3$，作用点在$\{\textnormal{a}\}$中表示为$\mathbf{r}_{\vec{\textnormal{b}}}^{\textnormal{a}}$的力，定义力螺旋$\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}}\in\mathbb{R}^6$为
+\begin{align*}
+\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}}  = \begin{bmatrix}
+\textbf{\texttau}_{\vec{\textnormal{b}}}^{\textnormal{a}}\\ \mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}\textnormal{(3)}} 
+\end{bmatrix} = \begin{bmatrix}
+\mathbf{r}_{\vec{\textnormal{b}}}^{\textnormal{a}} \times \mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}\textnormal{(3)}} \\
+\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}\textnormal{(3)}} 
+\end{bmatrix}
+\end{align*}
+其中我们将$\textbf{\texttau}_{\vec{\textnormal{b}}}^{\textnormal{a}}$称为螺旋力矩。
+\end{mydefinition}
+
+\begin{mytheorem}
+力螺旋的叠加：对于一个刚体受到两个力的作用时，两个命名为$\vec{\textnormal{b}_1}$和$\vec{\textnormal{b}_2}$，其效果为力螺旋的叠加，命名对应合成力为$\vec{\textnormal{b}}$，则有
+\begin{align*}
+\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{b}} = \mathbf{f}_{\vec{\textnormal{b}_1}}^{\,\textnormal{b}} + \mathbf{f}_{\vec{\textnormal{b}_2}}^{\,\textnormal{b}}
+\end{align*} \label{th:sumofwrench}
+\end{mytheorem}
+
+\begin{mytheorem}
+能量守恒：对于任意参照系$\{\textnormal{a}\}$和机体参照系$\{\textnormal{b}\}$，有
+\begin{align*}
+\mathbf{u}_\textnormal{ab}^\textnormal{a} \cdot \mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}} = \mathbf{u}_\textnormal{ab}^\textnormal{b} \cdot \mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{b}}
+\end{align*} 
+\end{mytheorem}
+
+\begin{mytheorem}
+实质力的力螺旋切换参照系：对于任意参照系$\{\textnormal{a}\}$和机体参照系$\{\textnormal{b}\}$以及实质力$\vec{\textnormal{b}}$，有
+\begin{align*}
+\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}} = [\textnormal{Ad}_{T_\textnormal{ba}}]^T \mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{b}}
+\end{align*}
+\end{mytheorem}
+
+\begin{mytheorem}
+力螺旋切换参照系：对于任意参照系$\{\textnormal{a}\}$和机体参照系$\{\textnormal{b}\}$以及力$\vec{\textnormal{b}}$，当$\mathbf{u}_\textnormal{ab}=\mathbf{0}$时，有
+\begin{align*}
+\mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{a}} = [\textnormal{Ad}_{T_\textnormal{ba}}]^T \mathbf{f}_{\vec{\textnormal{b}}}^{\,\textnormal{b}}
+\end{align*}
+\end{mytheorem}
+
+
+%如果$\textbf{\texttau}_\text{b}$与$\mathbf{f}^{{}_{(3)}}_\text{b}$能被等效为作用于一点的力，那么假设这个点为$\mathbf{r}_\text{b}$，那么有
+%\begin{align}
+%\textbf{\texttau}_\text{b} = \mathbf{r}_\text{b} \times \mathbf{f}^{{}_{(3)}}_\text{b} = \lVert \mathbf{r}_\text{b}\rVert \lVert\mathbf{f}^{{}_{(3)}}_\text{b}\rVert \sin\phi \frac{\textbf{\texttau}_\text{b}}{\lVert\textbf{\texttau}_\text{b}\rVert}
+%\end{align}
+%其中$\phi$为 $\mathbf{r}_\text{b}$与$\mathbf{f}^{{}_{(3)}}_\text{b}$的夹角。所以
+%\begin{align}
+%\mathbf{f}^{{}_{(3)}}_\text{b} \times \textbf{\texttau}_\text{b} =  \lVert \mathbf{r}_\text{b}\rVert \lVert\mathbf{f}^{{}_{(3)}}_\text{b}\rVert \sin\phi \frac{\textbf{\texttau}_\text{b}}{\lVert\textbf{\texttau}_\text{b}\rVert}
+%\end{align}
+
+\subsection{加速度以及单个刚体的动力学}
+\subsubsection{小节概述}
+\subsubsection{加速度与力螺旋}
+在讨论质心的时候，我们将刚体视作有限个质点的集合。根据性质\ref{th:sumofwrench}可知，每个质点受到的力螺旋之和即为整个刚体收到的力螺旋。而每个质点受到的力可以从加速度和质点的质量获得。而通过力我们便能获得力螺旋。因此我们首先应当分析对于刚体上某一个质点的速度和加速度。如果我们把参照系建在刚体的质心上，并且记第$i$个质点的坐标表达在$\{\text{b}\}$中为$\mathbf{p}_{\text{b}i}$（下标第一部分为$\text{b}$，第二部分为$i$），$\{\text{b}\}$的旋动为$\mathbf{u}_\text{\underline{\underline{b}}b} = [\mathbf{w}_\text{\underline{\underline{b}}b} \; \mathbf{v}_\text{\underline{\underline{b}}b} ]^T$，那么根据性质\ref{th:pointlinearvelocity}，有质点$i$的线速度为
+\begin{align}
+\dot{\mathbf{p}}_{\text{\underline{\underline{b}}}i} = \mathbf{v}_{\text{\underline{\underline{b}}}i} =\mathbf{v}_{\text{\underline{\underline{b}}b}} + \mathbf{w}_{\text{\underline{\underline{b}}b}} \times \mathbf{p}_{\text{b}i}  \label{eq:linearvelocitymassi}
+\end{align}
+我们直接对式子(\ref{eq:linearvelocitymassi})进行微分，可得质点$i$的加速度为
+\begin{align}
+\ddot{\mathbf{p}}_{\text{\underline{\underline{b}}}i} &= \dot{\mathbf{v}}_{\text{\underline{\underline{b}}}i} = \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}} + \frac{d}{dt}(\mathbf{w}_{\text{\underline{\underline{b}}b}} \times \mathbf{p}_{\text{b}i}) \nonumber\\
+&= \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}} + \dot{\mathbf{w}}_{\text{\underline{\underline{b}}b}}\times \mathbf{p}_{\text{b}i} + \mathbf{w}_{\text{\underline{\underline{b}}b}} \times \dot{\mathbf{p}}_{\text{b}i} \nonumber \\
+&= \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}} + \dot{\mathbf{w}}_{\text{\underline{\underline{b}}b}}\times \mathbf{p}_{\text{b}i} + \mathbf{w}_{\text{\underline{\underline{b}}b}} \times \mathbf{v}_{\text{\underline{\underline{b}}b}} + \mathbf{w}_{\text{\underline{\underline{b}}b}} \times (\mathbf{w}_{\text{\underline{\underline{b}}b}} \times \mathbf{p}_{\text{b}i}) \nonumber \\
+&=  \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}}  + [\dot{\mathbf{w}}_{\text{\underline{\underline{b}}b}}] \mathbf{p}_{\text{b}i} + [\mathbf{w}_{\text{\underline{\underline{b}}b}} ] \mathbf{v}_{\text{\underline{\underline{b}}b}} + [\mathbf{w}_{\text{\underline{\underline{b}}b}} ]^2 \mathbf{p}_{\text{b}i}  \label{eq:linearaccelerationmassi}
+\end{align}
+将式子(\ref{eq:linearaccelerationmassi})我们即可得到质点$i$受到的力，即
+\begin{align}
+\mathbf{f}^{\,\text{b}(3)}_{\text{\underline{\underline{b}}}i} = m_i \ddot{\mathbf{p}}_{\text{\underline{\underline{b}}}i} \label{eq:fmastationaryframe}
+\end{align}
+把刚体上的所有的质点所受的力相加，即为刚体受到的合外力$\mathbf{f}^{\,\text{b}(3)}_\text{\underline{\underline{b}}b}$，即
+\begin{align}
+\mathbf{f}^{\,\text{b}(3)}_\text{\underline{\underline{b}}b} &= \sum^n_{i=1} m_i \ddot{\mathbf{p}}_{\text{\underline{\underline{b}}}i}  = \sum m_i \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}} + \sum m_i [\dot{\mathbf{w}}_{\text{\underline{\underline{b}}b}}] \mathbf{p}_{\text{b}i} + \sum m_i [\mathbf{w}_{\text{\underline{\underline{b}}b}} ] \mathbf{v}_{\text{\underline{\underline{b}}b}} + \sum m_i [\mathbf{w}_{\text{\underline{\underline{b}}b}} ]^2 \mathbf{p}_{\text{b}i} \nonumber \\ 
+& = \sum m_i \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}} + \sum m_i [\mathbf{w}_{\text{\underline{\underline{b}}b}} ] \mathbf{v}_{\text{\underline{\underline{b}}b}} \quad \quad \text{note: } \sum m_i X \mathbf{p}_{\text{b}i} = X(\sum m_i \mathbf{p}_{\text{b}i}) = \mathbf{0}  \nonumber \\
+&= m \dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}} + m [\mathbf{w}_{\text{\underline{\underline{b}}b}} ] \mathbf{v}_{\text{\underline{\underline{b}}b}} \label{eq:forceinstationaryframe}
+\end{align}
+观察式子(\ref{eq:forceinstationaryframe})，我们考虑一个非常基本的情况，即刚体角速度与$\{\text{s}\}$的z轴同向，并且刚体质心线速度沿$\{\text{s}\}$的x轴方向，如果线速度和角速度都保持不变，那么显然此时刚体受合外力为0，即$\mathbf{f}^{\,\text{b}(3)}_\text{\underline{\underline{b}}b} = \mathbf{0}$，然而$[\mathbf{w}_{\text{\underline{\underline{b}}b}} ] \mathbf{v}_{\text{\underline{\underline{b}}b}}$显然不为零，意味着$\dot{\mathbf{v}}_{\text{\underline{\underline{b}}b}}$也不为零。也就是说相对于静止的惯性参照系，刚体的旋动是在变化的。这看起来非常荒谬，但实际上是合理的。因为如果我们分析两个旋动，之间相隔了非常短的时间，我们不难发现，刚体的旋动位于$\{\text{\underline{\underline{b}}}\}$的原点确实在发生变化。
+
+式子(\ref{eq:forceinstationaryframe})是正确的，但是对于一个匀速运动的刚体具有变化的旋动对我们来说非常别扭。具体来说，我们希望旋动的变化就是刚体的线加速度，这样我们安装在刚体上的加速度传感器就能测出来。因此，我们要引入一个新的参照系，$\{\text{\underline{b}}\}$，意为时刻与机体参照系$\{\text{b}\}$重合，且瞬时线速度与$\{\text{b}\}$相等且角速度为0的参照系，这听上去与我们之前假象$\{\text{\underline{\underline{b}}}\}$一样不可思议，但实际上也是合理的。而且由于$\{\text{\underline{b}}\}$是一个匀速直线运动而没有角速度的参照系，因此$\{\text{\underline{b}}\}$是一个惯性参照系，即在$\{\text{\underline{b}}\}$中不存在惯性力。在$\{\text{\underline{b}}\}$中重写式子(\ref{eq:forceinstationaryframe})，由于$\mathbf{v}_{\text{\underline{b}b}}= \mathbf{0}$，所以有
+\begin{align}
+\mathbf{f}^{\,\text{b}(3)}_\text{\underline{b}b} = m \dot{\mathbf{v}}_{\text{\underline{b}b}} + m [\mathbf{w}_{\text{\underline{b}b}} ] \mathbf{v}_{\text{\underline{b}b}} = m \dot{\mathbf{v}}_{\text{\underline{b}b}} \label{eq:forceinetialframe}
+\end{align}
+
+并且我们同样改写式子(\ref{eq:linearvelocitymassi})式子、式子(\ref{eq:fmastationaryframe})和(\ref{eq:linearaccelerationmassi})，有
+\begin{align}
+\dot{\mathbf{p}}_{\text{\underline{b}}i} &= \mathbf{v}_{\text{\underline{b}}i} =\mathbf{v}_{\text{\underline{b}b}} + \mathbf{w}_{\text{\underline{b}b}} \times \mathbf{p}_{\text{b}i} \\
+\ddot{\mathbf{p}}_{\text{\underline{b}}i} &= \dot{\mathbf{v}}_{\text{\underline{b}b}}  + [\dot{\mathbf{w}}_{\text{\underline{b}b}}] \mathbf{p}_{\text{b}i} + [\mathbf{w}_{\text{\underline{b}b}} ] \mathbf{v}_{\text{\underline{b}b}} + [\mathbf{w}_{\text{\underline{b}b}} ]^2 \mathbf{p}_{\text{b}i} \label{eq:inertialbodyacceleration} \\
+\mathbf{f}^{\,\text{b}(3)}_{\text{\underline{b}}i} &= m_i \ddot{\mathbf{p}}_{\text{\underline{b}}i} \label{eq:inertialmasspointforce}
+\end{align}
+我们看式子(\ref{eq:inertialbodyacceleration})中各项的含义。$\dot{\mathbf{v}}_{\text{\underline{b}b}}$是刚体质心的加速度；$[\dot{\mathbf{w}}_{\text{\underline{b}b}}] \mathbf{p}_{\text{b}i}$是由于角速度变化导致的加速度，又称欧拉加速度（Euler acceleration）；$[\mathbf{w}_{\text{\underline{b}b}} ] \mathbf{v}_{\text{\underline{b}b}}$是由于参照系的选择而导致的科氏加速度（Coriolis acceleration）；$[\mathbf{w}_{\text{\underline{b}b}} ]^2 \mathbf{p}_{\text{b}i}$是由于刚体旋转产生的向心加速度（centripetal acceleration）。由于欧拉加速度和向心加速度都只与旋转有关而和线速度无关，因此在式子(\ref{eq:forceinstationaryframe})和式子(\ref{eq:forceinetialframe})中，这两项都为0。在式子(\ref{eq:forceinetialframe})中，由于我们对参照系的选择，科氏加速度为0。
+
+基于式子(\ref{eq:inertialmasspointforce})，由于质点受到了力，那么力就会对刚体产生螺旋力矩，其力螺旋中的螺旋力矩为
+\begin{align}
+\textbf{\texttau}_{\text{\underline{b}}i}^{\text{b}} = \mathbf{p}_{\text{\underline{b}}i} \times \mathbf{f}^{\,\text{b}(3)}_{\text{\underline{b}}i} 
+\end{align}
+
+那么刚体受到螺旋力矩为
+\begin{align}
+\textbf{\texttau}_{\text{\underline{b}b}}^{\text{b}} &= \sum_{i=1}^{n} \mathbf{p}_{\text{\underline{b}}i} \times (m_i \ddot{\mathbf{p}}_{\text{\underline{b}}}) \nonumber \\
+&= \sum m_i [\mathbf{p}_{\text{\underline{b}}i}]  \dot{\mathbf{v}}_{\text{\underline{b}}b} + \sum m_i [\mathbf{p}_{\text{\underline{b}}i}][\dot{\mathbf{w}}_{\text{\underline{b}b}}] \mathbf{p}_{\text{b}i} + \sum m_i [\mathbf{p}_{\text{\underline{b}}i}][\mathbf{w}_{\text{\underline{b}b}} ] \mathbf{v}_{\text{\underline{b}b}} +  \sum m_i [\mathbf{p}_{\text{\underline{b}}i}] [\mathbf{w}_{\text{\underline{b}b}} ]^2 \mathbf{p}_{\text{b}i} 
+ \label{eq:inertialframetorque}
+\end{align}
+我们观察式子(\ref{eq:inertialframetorque})可以发现，$\sum m_i [\mathbf{p}_{\text{\underline{b}}i}]  \dot{\mathbf{v}}_{\text{\underline{b}}}$和$\sum m_i [\mathbf{p}_{\text{\underline{b}}i}][\mathbf{w}_{\text{\underline{b}b}} ] \mathbf{v}_{\text{\underline{b}b}}$这两项都是与质心有关的力，因此不会产生螺旋力矩，即这两项为0。$\sum m_i [\mathbf{p}_{\text{\underline{b}}i}][\dot{\mathbf{w}}_{\text{\underline{b}b}}] \mathbf{p}_{\text{b}i}$是与角加速度对应螺旋力矩，而$\sum m_i [\mathbf{p}_{\text{\underline{b}}i}] [\mathbf{w}_{\text{\underline{b}b}} ]^2 \mathbf{p}_{\text{b}i}$是由于质量分布导致的扭矩。
+
+用直观的例子来理解$\sum m_i [\mathbf{p}_{\text{\underline{b}}i}] [\mathbf{w}_{\text{\underline{b}b}} ]^2 \mathbf{p}_{\text{b}i}$，如图[TODO]，对于一个形似杠铃的刚体绕z轴发生旋转，且杠的轴线与yz平面共面时，两端的质量球会有一对y轴方向向心力（忽略杠的质量）。由于这两个向心力不共线，对刚体会产生扭矩，故得此项。我们不难发现，这一项的大小取决于旋转轴的方向与刚体的质量分布。在图[TODO]中的例子中，如果旋转轴沿着杠铃中杠的方向，那么就不会有扭矩产生，因而这一项就不会存在而为零。
+
+\begin{align}
+\textbf{\texttau}_{\text{\underline{b}b}}^{\text{b}} &=
+ \sum m_i [\mathbf{p}_{\text{\underline{b}}i}][\dot{\mathbf{w}}_{\text{\underline{b}b}}] \mathbf{p}_{\text{b}i}  +  \sum m_i [\mathbf{p}_{\text{\underline{b}}i}] [\mathbf{w}_{\text{\underline{b}b}} ]^2 \mathbf{p}_{\text{b}i} \nonumber \\
+&= (-\sum m_i [\mathbf{p}_{\text{\underline{b}}i}]^2 )\dot{\mathbf{w}}_{\text{\underline{b}b}} + [\mathbf{w}_{\text{\underline{b}b}} ](-\sum m_i [\mathbf{p}_{\text{\underline{b}}i}]^2 )\mathbf{w}_{\text{\underline{b}b}} \label{eq:torqueinertialframe2}
+\end{align}
+
+观察式子(\ref{eq:torqueinertialframe2})可以发现，$(-\sum m_i [\mathbf{p}_{\text{\underline{b}}i}]^2 )$这一部分出现了两次，而且是角加速度的系数，类比可以相当于旋转系统里的质量，具有一定的物理意义。因此把这部分单独写成出来，有[TODO：改变标记说明，加粗大写字母表示矩阵]
+\begin{align}
+\mathbf{I}_\text{b} = (-\sum m_i [\mathbf{p}_{\text{\underline{b}}i}]^2 ) = \begin{bmatrix}
+\sum m_i(p_{\text{b}iy}^2 + p_{\text{b}iz}^2 ) & -\sum m_i p_{\text{b}ix} p_{\text{b}iy} & -\sum m_i p_{\text{b}ix} p_{\text{b}iz} \\
+-\sum m_i p_{\text{b}ix} p_{\text{b}iy} & \sum m_i(p_{\text{b}ix}^2 + p_{\text{b}iz}^2 ) & -\sum m_i p_{\text{b}iy} p_{\text{b}iz} \\
+-\sum m_i p_{\text{b}ix} p_{\text{b}iz} & -\sum m_i p_{\text{b}iy} p_{\text{b}iz}  & \sum m_i(p_{\text{b}ix}^2 + p_{\text{b}iy}^2 )
+\end{bmatrix}
+\end{align}
+我们把$\mathbf{I}_\text{b}$称为刚体的惯性张量或惯性张量矩阵。为了方便起见，我们记
+\begin{align}
+\mathbf{I} = \begin{bmatrix}
+i_{xx} & i_{xy} & i_{xz}\\
+i_{xy} & i_{yy} & i_{yz}\\
+i_{xz} & i_{xy} & i_{zz}
+\end{bmatrix}
+\end{align}
+
+我们观察一下惯性张量矩阵中的每一项，让我们在角加速度的角度去理解一下其中每一项的意义。如图[TODO图]中形似杠铃的一个刚体，杠的轴线与yz平面共面。此时刚体发生在z轴的旋转，并且在z轴的旋转有正的角加速度。那么这个正的角速度必然是来自与某个力矩的。而处于$\mathcal{I}$中的对角位置的项便是力矩与这个角加速度的桥梁或惯性系数。由于角加速度乘以旋转得到直线加速度，直线加速度乘以质量得到力，力与旋转半径得到扭矩，即
+\begin{align}
+\tau_{\text{\underline{b}}iz}   = m_i r_{iz} ^2 w_{\text{\underline{b}}z}\ddot{\theta} = m_i (p_{\text{b}ix}^2+p_{\text{b}iy}^2)  w_{\text{\underline{b}}z}\ddot{\theta}
+\end{align}
+其中半径即是$\sqrt{p_{\text{b}ix}^2+p_{\text{b}iy}^2}$，为质点$i$到z轴的距离，与$\mathbf{I}$中的项完全对应。
+
+当质点绕轴旋转发生角加速度时，质点对应地也会产生直线加速度，那么这就意味着有一个力作用于质点。因此，我们对一个质点进行分析。很显然，这个与直线加速度相关力导致y轴方向的力矩，并且这个力矩大小为半径$\times$力在y轴上的分量，即半径在z轴的分量$\times$力在x轴上的分量，而力在x轴上的分量等于角加速度在z轴分量$\times$半径在y轴上分量并乘以质量。再考虑叉乘的方向性，符号取负，即有此质点产生y轴方向的力矩为
+\begin{align}
+\tau_{\text{b}iy} =- m_i p_{\text{b}iy}p_{\text{b}iz} w_{\text{\underline{b}}z}\ddot{\theta} 
+\end{align}
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.35]{images/rotation_acceleration.png}
+  \caption{Torque caused by Rotation}
+  \label{fig:inertia_angular_acceleration}
+\end{figure}
+
+可见，如果刚体整体的$ -\sum m_i p_{iy} p_{iz}$不为零的话就会导致刚体绕特定轴发生角加速度时导致加速度轴以外的力矩，与$\mathcal{I}$中的项完全对应。
+
+那这样一来，我们发现，在特定的旋转轴下的角加速度会导致产生这种“多余”的力矩。我们是否能够找到一个旋转轴，使得旋转轴如果有角加速度时不产生任何“多余”的力矩呢？把这个命题用代数表达即
+\begin{align}
+\textbf{\texttau}_{\text{\underline{b}}} = k\hat{\mathbf{w}}_\text{\underline{b}} = \mathbf{I}_\text{b} \hat{\mathbf{w}}_\text{\underline{b}} \ddot{\theta}
+\end{align}
+我们发现，这即变成了求特征值和特征向量的问题
+\begin{align}
+(\mathbf{I} \ddot{\theta})\hat{\mathbf{w}}_\text{\underline{b}} = A\mathbf{x} = \frac{k}{\ddot{\theta}} \hat{\mathbf{w}}_\text{\underline{b}} = \lambda \mathbf{x} \label{eq:matrixeigen}
+\end{align}
+要使式子(\ref{eq:matrixeigen})存在非零特征向量和特征值，$\mathbf{I}_\text{b}$须为可逆矩阵。实际上，$\mathbf{I}$不仅可逆，而且是正定矩阵（positive-definite matrix），即特征值均为正。具体证明过程不在此赘述。
+
+%一种快速的证明方法就是考虑到rigid body是由有限多particles组成，而一个particle组成的moment of inertia tensor易证为positive definite，并且两个symmetric positive definite matrices之和也为positive definite。因此得证。还有一种利用运动的object的kinectic energy总是为正来证。具体symmetric positive definite matrices之和为positive definite这一命题可以自行当习题做，在此不展开。
+
+因此，我们一定找到旋转轴，使得角加速度不会产生“多余的”力矩，而且式子(\ref{eq:torqueinertialframe2})中的$[\mathbf{w}_{\text{\underline{b}b}} ](-\sum m_i [\mathbf{p}_{\text{\underline{b}}i}]^2 )\mathbf{w}_{\text{\underline{b}b}}$也为零[TODO:验证一下]。对于对称矩阵来说[TODO：这个有待确认]，特征向量互相垂直（orthogonal），因此特征向量就是空间中的3个基。如果以特征向量作为xyz轴建立参照系，则会得到一个非常干净的对称矩阵（当然这些过程都是线性代数中的基础，在本讲义就不具体展开了）
+\begin{align}
+\mathbf{I} = \begin{bmatrix}
+i_{xx} & 0 &0 \\
+0 & i_{yy}&0 \\
+0 & 0 &i_{zz} \\
+\end{bmatrix} \label{eq:diagonalinertiatensor}
+\end{align}
+由于式子(\ref{eq:diagonalinertiatensor})的特殊性，我们把式子(\ref{eq:matrixeigen})的特征向量对应形成的3个互相垂直的基称作惯量主轴（principal axes of inertia），并以惯量主轴方向作为$\{\text{b}\}$的取向的话，那么$\mathbf{I}_\text{b}$就是一个式子(\ref{eq:diagonalinertiatensor})一般的对角矩阵。惯量主轴可以不是唯一的，这种情况下，刚体会具有对成型，比如球体，任何直角坐标系都可以称为球体的惯量主轴。
+
+可见，将参照系的方向建立在刚体的惯量主轴方向上可以让式子变得非常简洁，因此我们在考虑参照系的方向时，应当优先选择惯量主轴的方向。
+
+至此，我们整理一下力和螺旋力矩
+\begin{align}
+\mathbf{f}^{\,\text{b}(3)}_\text{\underline{b}b} &= m \dot{\mathbf{v}}_{\text{\underline{b}b}} + m [\mathbf{w}_{\text{\underline{b}b}} ] \mathbf{v}_{\text{\underline{b}b}} \label{eq:forcetomatrix}\\
+\textbf{\texttau}_{\text{\underline{b}b}}^{\text{b}} &=
+ \mathbf{I}_\text{b}\dot{\mathbf{w}}_{\text{\underline{b}b}} + [\mathbf{w}_{\text{\underline{b}b}} ]\mathbf{I}_\text{b}\mathbf{w}_{\text{\underline{b}b}} \label{eq:torquetomatrix}
+\end{align}
+将式子(\ref{eq:forcetomatrix})和式子(\ref{eq:torquetomatrix})并在一起组成力螺旋，则有
+\begin{align}
+\mathbf{f}_\text{\underline{b}b}^{\,\text{b}}& = \begin{bmatrix}
+\mathbf{I}_\text{b} & 0\\
+0 & mI
+\end{bmatrix}\begin{bmatrix}
+\dot{\mathbf{v}}_{\text{\underline{b}b}} \\ \dot{\mathbf{w}}_{\text{\underline{b}b}}\end{bmatrix} + \begin{bmatrix}
+[\mathbf{w}_{\text{\underline{b}b}} ] & 0 \\
+0 & [\mathbf{w}_{\text{\underline{b}b}} ]
+\end{bmatrix}\begin{bmatrix}
+\mathbf{I}_\text{b} & 0\\
+0 & mI
+\end{bmatrix}
+\begin{bmatrix}
+\mathbf{w}_{\text{\underline{b}b}}\\\mathbf{v}_{\text{\underline{b}b}}
+\end{bmatrix} \nonumber \\
+&= G_\text{b} \dot{\mathbf{u}}_\text{\underline{b}b} + [\text{ad}_{\mathbf{w}^{{}_{(6)}}_{\text{\underline{b}b}}}] G_\text{b} \mathbf{u}_\text{\underline{b}b} \label{eq:fmascrew1}  \\ 
+&= G_\text{b} \dot{\mathbf{u}}_\text{\underline{b}b} - [\text{ad}_{\mathbf{u}_{\text{\underline{b}b}}}]^T G_\text{b} \mathbf{u}_\text{\underline{b}b} \label{eq:fmascrew2}
+\end{align}
+其中我们记
+\begin{align}
+G_\text{b} &= \begin{bmatrix}
+\mathbf{I}_\text{b} & 0\\
+0 & mI
+\end{bmatrix}\\
+[\text{ad}_\mathbf{u}] &= \begin{bmatrix}
+[\mathbf{w}] & 0 \\
+[\mathbf{v}] & [\mathbf{w}]
+\end{bmatrix}\\
+\mathbf{w}^{{}_{(6)}} &= \begin{bmatrix}
+\mathbf{w}\\
+\mathbf{0}
+\end{bmatrix}
+\end{align}
+$G_\text{b}$为空间惯量矩阵，相当于螺旋理论中的质量。
+
+可见，式子(\ref{eq:fmascrew1})和式子(\ref{eq:fmascrew2})即是螺旋理论中的$f=ma$。其中$G$对应质量$m$，$\dot{\mathbf{u}}$对应加速度$a$，$\mathbf{f}$对应力$f$，而剩余一项的$-[\text{ad}_{\mathbf{u}}]^T G\mathbf{u}$对应惯性力。
+
+\subsubsection{关于单个刚体动力学的性质}
+\begin{mydefinition}
+对于由$n$个质点组成的刚体，以及位于刚体质心的机体参照系$\{\textnormal{b}\}$。刚体的质点$i$的质量记作$m_{\textnormal{b}i}\in\mathbb{R}$，在$\{\textnormal{b}\}$中坐标记作$\mathbf{p}_{\textnormal{b}i} \in\mathbb{R}^3$，定义惯性张量矩阵$\mathbf{I}_\textnormal{b}\in\mathbb{R}^{3\times 3}$（简称惯性张量）为
+\begin{align*}
+\mathbf{I}_\textnormal{b} = \sum_{i=1}^{n} - m_{\textnormal{b}i} [\mathbf{p}_{\textnormal{b}i}]^2 = \begin{bmatrix}
+i_{xx} & i_{xy} & i_{xz}\\
+i_{xy} & i_{yy} & i_{yz}\\
+i_{xz} & i_{xy} & i_{zz}
+\end{bmatrix}
+\end{align*}
+\end{mydefinition}
+
+\begin{mydefinition}
+对于由$n$个质点组成的刚体，以及位于刚体质心的机体参照系$\{\textnormal{b}\}$。刚体的质点$i$的质量记作$m_{\textnormal{b}i}\in\mathbb{R}$，对应的惯性张量矩阵$\mathbf{I}_\textnormal{b}$，记刚体的总质量为
+\begin{align*}
+m_\textnormal{b}=\sum_{i=1}^{n} m_{\textnormal{b}i}
+\end{align*}
+定义空间惯量矩阵$G_\textnormal{b}\in\mathbb{R}^{6\times 6}$为
+\begin{align*}
+G_\textnormal{b} = \begin{bmatrix}
+\mathbf{I}_\textnormal{b} & 0\\
+0 & m_\textnormal{b}I
+\end{bmatrix}
+\end{align*}
+其中$I\in\mathbb{R}^{3\times 3}$为单位矩阵。
+\end{mydefinition}
+
+\begin{mydefinition}
+对于$\mathbf{u} = [\mathbf{w}\; \mathbf{v}]^T\in \mathbb{R}^6$，定义$[\textnormal{ad}_{\mathbf{u}}]\in\mathbb{R}^{6\times 6}$
+\begin{align*}
+[\textnormal{ad}_{\mathbf{u}}] = \begin{bmatrix}
+[\mathbf{w}] & 0 \\
+[\mathbf{v}] & [\mathbf{w}]
+\end{bmatrix}
+\end{align*}
+\end{mydefinition}
+
+\begin{mytheorem}
+惯性张量矩阵$\mathbf{I}_\textnormal{b}$为正定矩阵。
+\end{mytheorem}
+
+
+\begin{mytheorem}
+空间惯量矩阵$G_\textnormal{b}$为正定矩阵。
+\end{mytheorem}
+
+\begin{mytheorem}
+存在位于刚体质心的机体参照系$\{\textnormal{b}\}$的取向，使得刚体的惯性张量矩阵为对角矩阵，即
+\begin{align*}
+\mathbf{I}_\textnormal{b} 
+&= \begin{bmatrix}
+i_{xx} & 0 & 0\\
+0 & i_{yy} & 0\\
+0 & 0 & i_{zz}
+\end{bmatrix}
+\end{align*}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于刚体以及位于刚体质心的机体参照系$\{\textnormal{b}\}$，刚体相对于$\{\textnormal{a}\}$发生运动，且从$\{\textnormal{a}\}$观察刚体受到合外力表达在$\{\textnormal{b}\}$中为$\mathbf{f}_\textnormal{ab}^{\,\textnormal{b}}$
+\begin{align*}
+\mathbf{f}_\textnormal{ab}^{\,\textnormal{b}} = G_\textnormal{b} \dot{\mathbf{u}}_\textnormal{ab}^\textnormal{b} - [\textnormal{ad}_{\mathbf{u}_\textnormal{ab}^\textnormal{b}}]^T G_\textnormal{b} \mathbf{u}_\textnormal{ab}^\textnormal{b}
+\end{align*}
+或
+\begin{align*}
+\mathbf{f}_\textnormal{ab}^{\,\textnormal{b}} =  G_\textnormal{b} \dot{\mathbf{u}}_\textnormal{ab}^\textnormal{b} + [\textnormal{ad}_{\mathbf{w}_\textnormal{ab}^{\textnormal{b}(6)}}] G_\textnormal{b} \mathbf{u}_\textnormal{ab}^\textnormal{b}
+\end{align*}
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\textnormal{ad}_{\mathbf{u}_{\textnormal{ab}}^{\textnormal{a}}}] = (\frac{d}{dt}[\textnormal{Ad}_{T_{\textnormal{ab}}}])[\textnormal{Ad}_{T_{\textnormal{ba}}}]$ \label{th:adjointdiff1} [TODO：有待验证]
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\textnormal{ad}_{\mathbf{u}_{\textnormal{ab}}^{\textnormal{b}}}] = [\textnormal{Ad}_{T_{\textnormal{ba}}}](\frac{d}{dt}[\textnormal{Ad}_{T_{\textnormal{ab}}}])$ \label{th:adjointdiff2} [TODO：有待验证]
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\textnormal{ad}_{\mathbf{a}}] \mathbf{b} = -[\textnormal{ad}_{\mathbf{b}}] \mathbf{a}$ \label{th:adjointab}
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\textnormal{ad}_{\mathbf{u}}] \mathbf{u} = \mathbf{0}$ \label{th:adjointtwistzero}
+\end{mytheorem}
+\end{document}
+

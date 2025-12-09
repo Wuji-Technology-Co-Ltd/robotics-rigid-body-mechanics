@@ -1,0 +1,751 @@
+\documentclass[12pt, a4paper, article, UTF8]{ctexart}
+\usepackage[subpreambles=true]{standalone}
+\usepackage{import}
+\begin{document}
+\section{旋转}
+\subsection{章节概述}
+\subsection{二维空间的旋转}
+\subsubsection{小节概述}
+在这小节中，我们将研究和分析最简单的二维平面的旋转。二维平面的旋转直观并容易理解，我们在二维当中获得的直觉对我们理解三维有很大帮助。
+
+在这一小节，我们会先引入一个静止的固定参照系作为我们研究运动的基础参照系，在此基础上再引入一个会不断变化或运动的机体参照系，并研究机体参照系与固定参照系之间转换。在研究转换时，我们引入旋转矩阵的概念，并解释旋转矩阵的作用和三个意义：1. 用来表达参照系；2. 对物体进行旋转的操作；3. 切换参照系。最后我们讨论一些关于二维旋转矩阵的性质。
+
+\subsubsection{二维旋转矩阵}
+我们首先确定一个固定的坐标系，作为我们研究运动的基础，这个坐标系可以是你想设置的任何地方，可以是宇宙的中心，或者你想研究的机器人位置的基座或，或者是大地，总之怎么方便怎么来。但一旦设定了，就不能动了（你真的想这个参照系动也可以，但你研究问题总得有个静止的参照系作为参照更方便一点，不是吗？），是一个惯性参照系（reference frame of inertia）。我们把这个惯性参照系称作为固定参照系（fixed frame），或者叫空间坐标系（spatial frame）。
+
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.4]{images/2D_frame.png}
+  \caption{fixed frame and world frame}
+  \label{fig:boat1}
+\end{figure}
+
+我们简单一点，就看一个二维的固定参照系。我们把这个固定参照系记作$\{\text{s}\}$，其中s代表spatial，意思是空间中的。这是本讲义的一个标记习惯习惯：$\{$和$\}$当中包括字母，比如$\{\text{x}\}$，代表某个参照系。
+
+我们要描述这个参照系的有很多方法，一种方法是把它的两个基（单数basis，复数bases）——即x轴和y轴——描述出来就好了。x轴和y轴是两个单元向量（unit vector），因此以这两个单元向量以$\{\text{s}\}$为参照系表达出来就是
+\begin{align}
+\hat{\mathbf{x}}_{\text{ss}}&=\begin{bmatrix}
+1&
+0
+\end{bmatrix}^T\nonumber \\ 
+\hat{\mathbf{y}}_{\text{ss}}&=\begin{bmatrix}
+0&1\end{bmatrix}^T
+\end{align}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.4]{images/2D_frame_with_b.png}
+  \caption{fixed frame and body frame}
+  \label{fig:boat2}
+\end{figure}
+
+在这里$\hat{\mathbf{x}}_{\text{ss}} \in \mathbb{R}^2$中的第一个s代表在$\{\text{s}\}$，第二个s表示是$\{\text{s}\}$的x轴。
+
+比如说$\{\text{s}\}$的原点（origin）处有一个可以旋转的电机（rotary electric motor）[TODO：配图]，电机的轴的中心与$\{\text{s}\}$的原点重合。因为我们讨论的是二维空间，所以电机有意义的摆放和旋转方向只有一种。当电机旋转时，旋转的部分，即转子（rotor）的与$\{\text{s}\}$的相对角度就会发生变化。那无论是以$\{\text{s}\}$的视角看转子，还是在转子的视角看$\{\text{s}\}$，都会不同。因此我们引入第二个参照系，叫做机体参照系（body frame），记作$\{\text{b}\}$。需要注意，目前这个机体参照系只能进行旋转（rotation）而原点坐标不移动，也就是$\{\text{b}\}$的origin始终与$\{\text{s}\}$的origin重合。
+
+这样一来$\{\text{b}\}$与$\{\text{s}\}$形成了一个夹角，我们记作$\theta \in \mathbb{R}$。如果我们在$\{\text{s}\}$中表达$\{\text{b}\}$，那也很简单，只要将$\{\text{b}\}$的x轴和y轴的单元向量表达即可，这是充分且必要的。以x轴为例，表达$\{\text{b}\}$的x轴即为分别表示其在$\hat{\mathbf{x}}_{\text{ss}}$和$\hat{\mathbf{y}}_{\text{ss}}$上的投影（projection）并相加即可。
+\begin{align}
+\hat{\mathbf{x}}_{\text{sb}}&=\hat{\mathbf{x}}_{\text{ss}} \cos{\theta} + \hat{\mathbf{y}}_{\text{ss}} \sin{\theta} = \begin{bmatrix}
+\cos{\theta} \\ \sin{\theta}
+\end{bmatrix} \nonumber \\ 
+\hat{\mathbf{y}}_{\text{sb}}&=-\hat{\mathbf{x}}_{\text{ss}} \sin{\theta} + \hat{\mathbf{y}}_{\text{ss}} \cos{\theta} = \begin{bmatrix}
+-\sin{\theta} \\ \cos{\theta}
+\end{bmatrix} \label{eq:bodyaxis}
+\end{align}
+在这里，$\hat{\mathbf{x}}_{\text{sb}}$和$\hat{\mathbf{y}}_{\text{sb}}$中的s代表是在$\{\text{s}\}$中表达，b代表的是$\{\text{b}\}$的x轴和y轴。$\{\text{b}\}$的x轴和y轴在$\{\text{b}\}$中的表达，即$\hat{\mathbf{x}}_{\text{bb}}$和$\hat{\mathbf{y}}_{\text{bb}}$就是无聊的$[1\;0]^T$和$[0\;1]^T$
+
+那我们将式子(\ref{eq:bodyaxis})写成$2\times 2$矩阵形式即为
+\begin{align}
+R = \begin{bmatrix} \hat{\mathbf{x}}_{\text{sb}}&\hat{\mathbf{y}}_{\text{sb}} \end{bmatrix} 
+ = \begin{bmatrix} \cos{\theta} & -\sin{\theta} \\ \sin{\theta} & \cos{\theta} \end{bmatrix} \label{eq:2drotationmatrix}
+\end{align}
+
+那我们现在先给一个结论性的定义，就是这个$R$是一个旋转矩阵（rotation matrix）。首先旋转的自由度（degree of freedom）只有一个，那就是$\theta$，但旋转矩阵有4个元素（element），代表4个自由度。而多余的三个约束（constraint）分别为x轴的长度，y轴的长度（都是unit vector，即$||\hat{\mathbf{x}}_\text{sb}|| = ||\hat{\mathbf{y}}_\text{sb}|| = 1$），x轴和y轴夹角为90°（$\hat{\mathbf{x}}_\text{sb} \cdot \hat{\mathbf{y}}_\text{sb} = 0$）。那这样3个约束，1个自由度组成了这个旋转矩阵。
+
+\subsubsection{二维旋转矩阵的三个意义}
+
+我们不禁要问：为什么把机体参照系的两个基（两个单元向量）凑在一块就成了旋转矩阵了呢？为什么我们要把一个很简单用$\theta$就能描述的空间相对关系写成一个复杂的形式？这个旋转矩阵有什么意义，在什么场合使用，如何使用？
+
+一个旋转矩阵有三个意义：
+
+第一，旋转矩阵可以用来表达一个参照系的取向（orientation），简称表达一个参照系。对于二维且原点重合的参照系来说，这个旋转矩阵就是做参照系的方位\footnote{方位这一次可以被理解为方向和位置}（configuration）。即参照系的方位被其取向所完全定义。比如在这里，我们用$R$来表达机体参照系，这也正是前文所写的内容。
+
+第二，旋转矩阵可以被认为是在某一个参照系中，在空间中将一个物体（object）旋转一个角度这样的操作（operation）。因为物体在参照系中旋转后会发生位置变化，因此表达物体的坐标也会对应变化，那么这个变化就可以通过旋转矩阵来计算。什么是物体？它可以是一个点、一个向量、若干个点、若干个向量、他们的任何组合、或者在二维空间里以表达出来的任何东西。其实点和向量在表达上没太大的区别，因为任何点和原点连起来你就能得到向量，而原点又是固定的。因此只要我们研究旋转矩阵是如何作用于点的，那其实任何物体，无论是向量、参照系、直线、圆，任何东西都是一样的，因为他们都可以用点和向量的组合的形式来描述。
+
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.45]{images/2D_frame_rotation.png}
+  \caption{2 bases as rotation matrix}
+  \label{fig:2drotation}
+\end{figure}
+
+我们不禁要问为什么两个$\{\text{b}\}$的两个基拼凑在在一起就是二维旋转矩阵了？为什么二维旋转矩阵可以表示对物体的旋转？其实，我们看基本身的构造。
+\begin{align}
+\hat{\mathbf{x}}_{\text{sb}} = \begin{bmatrix}
+\text{\{b\}的x轴在\{s\}的x轴上的投影} \\
+\text{\{b\}的x轴在\{s\}的y轴上的投影} 
+\end{bmatrix} \quad \hat{\mathbf{y}}_{\text{b}} = \begin{bmatrix}
+\text{\{b\}的y轴在\{s\}的y轴上的投影} \\
+\text{\{b\}的y轴在\{s\}的y轴上的投影} \label{eq:2drotationprojection}
+\end{bmatrix}
+\end{align}
+结合图(\ref{fig:2drotation})理解为什么两个基并在一块形成就是旋转矩阵。图(\ref{fig:2drotation})中，为了强调点$p$在$\{\text{s}\}$中发生旋转，我们顺便也画了一个随着点一起旋转的机体坐标系$\{\text{b}\}$。当$\{\text{b}\}$跟着点$p$同时转动，转动后的点$p'$相对于$\{\text{b}\}$的位置，与转动前相对于$\{\text{s}\}$的位置是一样的，即$p'_{\text{b}x}=p_{\text{s}x}$，$p'_{\text{b}y}=p_{\text{s}y}$。我们要在$\{\text{s}\}$中表达$\text{p}'$，以p'在$\{\text{s}\}$的x轴为例，其实就是把$p'_{\text{b}x}$和$p'_{\text{b}y}$中在$\{\text{s}\}$上的分量提取出来。这一步提取分量其实就是取$p'_{\text{b}x}$和$p'_{\text{b}y}$取在$\{\text{s}\}$的x轴上的投影。对于这种投影关系正是我们通过两个基来构建旋转矩阵的根本。因此$\{\text{b}\}$的两个基投影在$\{\text{s}\}$当中拼在一块就可以组成旋转矩阵。
+
+第三，旋转矩阵可以用来在参照系和参照系中切换。即我们以$\{\text{s}\}$作为基准，已知$\{\text{b}\}$的取向是$R$。如果有一个点，在$\{\text{b}\}$中表达为$\mathbf{p}_\text{b}$，那么同样这个点不动，从$\{\text{s}\}$看过去的位置肯定是不一样的，那他在$\{\text{s}\}$中的最表记作$\mathbf{p}_\text{s}$，那么我们有
+\begin{align}
+\mathbf{p}_\text{s} = R\mathbf{p}_\text{b}
+\end{align}
+我们将$\{\text{b}\}$的取向在$\{\text{s}\}$中的表达记作$R_\text{sb}$（即前文的$R$这个旋转矩阵），因此
+\begin{align}
+\mathbf{p}_\text{s} =R\mathbf{p}_\text{b}= R_\text{sb}\mathbf{p}_\text{b}
+\end{align}
+这个其实结合旋转矩阵的第二个含义以及图(\ref{fig:2drotation})，这个很好理解，即把$\{\text{b}\}$中表达的坐标投影到$\{\text{s}\}$上去，和旋转产生的效果是完全一样的。
+
+\subsubsection{关于二维旋转矩阵的定义和性质}
+
+对于两个任意的原点重合的二维参照系$\{\text{a}\}$与$\{\text{b}\}$，在$\{\text{a}\}$中表达$\{\text{b}\}$记作$R_\text{ab}$；在$\{\text{b}\}$中表达$\{\text{a}\}$记作$R_\text{ba}$。对于$R_\text{ab}$，$R_\text{ba}$，以及其他旋转矩阵$R$有如下定义和性质：
+\begin{mydefinition}
+定义所有二维旋转矩阵组成的集合为$\theta \in \mathbb{R}$，$\theta $取全体实数时得到的\begin{align}
+R = R(\theta) = \begin{bmatrix}
+\cos{\theta} & -\sin{\theta}\\
+\sin{\theta} & \cos{\theta}
+\end{bmatrix} \label{eq:2ddefinition}
+\end{align}
+所有$R$组成的集合。\footnote{实际上，二维旋转矩阵的集合为$SO(2)$，$SO$意为special orthogonal group。这是李群的概念。} \label{def:2drotation}
+\end{mydefinition}
+
+\begin{mytheorem}
+对于二维旋转矩阵$A$和$B$，$AB$也是二维旋转矩阵。\label{th:2dproductclosure}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于二维旋转矩阵$A$、$B$和$C$，有$(AB)C=A(BC)$ \label{th:2dassociative}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任何二维旋转矩阵$R(\theta)$，其对应的$\theta$在$\theta\in [0,2\pi)$范围内确定且唯一  \label{th:2dthetaonly}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于一个点或向量在空间中记作$\mathbf{p}\in\mathbb{R}^2$，在$\{\textnormal{a}\}$中表达记作$\mathbf{p}_\textnormal{a}$，在$\{\textnormal{b}\}$中表达记作$\mathbf{p}_\textnormal{b}$，有$\mathbf{p}_\textnormal{a}=R_\textnormal{ab}\mathbf{p}_\textnormal{b}$[TODO证明]
+\label{th:2dchangeframe}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任意二维参照系$\{\textnormal{c}\}$，有
+$R_\textnormal{ac} = R_\textnormal{ab}R_\textnormal{bc}$ [TODO证明]
+\end{mytheorem}
+
+\begin{mytheorem}
+若$R_\textnormal{ab}=R(\theta)$，则$R_\textnormal{ba}=R(-\theta)$ \label{th:2dminustheta}
+\end{mytheorem}
+
+\begin{mytheorem}
+$R_\textnormal{ba} = R_\textnormal{ab}^T$ \label{th:2dtranspose}
+\end{mytheorem}
+
+\begin{mytheorem}
+$R_\textnormal{ab} R_\textnormal{ba} = I$ \label{th:2dinverse}
+\end{mytheorem}
+
+\begin{mytheorem}
+$R^{-1} = R^T$ \label{th:2dinversetranspose}
+\end{mytheorem}
+
+下面对这些性质一一证明。
+
+对于性质\ref{th:2dproductclosure}，代数上代入$\theta=\alpha + \beta$到定义\ref{def:2drotation}，通过三角函数得到$R(\theta) = R(\alpha)R(\beta)$即可得证。几何角度来说，可以用参照系之间的切换来解释，即$R_\text{ab}R_\text{bc} = R_\text{ac}$。在一个参照系（$\{\text{a}\}$）中表达另一个参照系$\{\text{c}\}$的取向当中经过了一个参照系$\{\text{b}\}$，并不影响被表达的参照系本身。
+
+对于性质\ref{th:2dassociative}:
+从矩阵乘法的结合律就可以直接得到此性质。在旋转矩阵的语境下，可以用参照系与参照系之间的切换来理解。两个参照系之间的切换，无论当中隔了多少参照系，无论以什么样的顺序进行切换，都会得到一样的结果。即$ABC$涉及到4个frame，我们不妨假设$ABC=R_{12}R_{23}R_{34}$，无论顺序如何，最终结果都会是我们从最初的在$\{4\}$中表达，转化为到在$\{1\}$中表达。
+
+对于性质\ref{th:2dchangeframe}，在讨论二维旋转矩阵时，在式子(\ref{eq:2drotationprojection})和图(\ref{fig:2drotation})当中已经解释和证明过。
+
+对于性质\ref{th:2dthetaonly}，代数角度从三角函数即可轻易证明。从几何角度来说，当二维旋转矩阵确定时，对应空间中的两个基也随之确定，所以对应夹角$\theta$也随之确定。
+
+对于性质\ref{th:2dminustheta}，在几何上比较直观。如果$\{\text{b}\}$相对$\{\text{a}\}$有$\theta$的旋转角，那么$\{\text{a}\}$相对$\{\text{b}\}$就有$-\theta$的旋转角。
+
+对于性质\ref{th:2dtranspose}，在代数上上直接通过观察定义\ref{def:2drotation}，即观察$R(\theta)$和$R(-\theta)$即可得证。但我们更关心的是它的几何意义。
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.3]{images/2d_projection.png}
+  \caption{Projection of Basis}
+  \label{fig:2dprojection}
+\end{figure}
+我们不难发现，$\{\text{b}\}$的x轴在$\{\text{s}\}$的x轴上的投影=$\{\text{s}\}$的x轴在$\{\text{b}\}$的x轴上的投影。这是得益于点乘的性质：$\hat{\mathbf{x}}_\text{s} \cdot \hat{\mathbf{x}}_\text{b} = \hat{\mathbf{x}}_\text{b} \cdot \hat{\mathbf{x}}_\text{s}$。同理，对于$\{\text{b}\}$和$\{\text{s}\}$的各个基互相投影都相等。因此
+\begin{align}
+R_\text{ba} &= \begin{bmatrix}
+\hat{\mathbf{x}}_\text{a}\text{投影于}\hat{\mathbf{x}}_\text{b} &  \hat{\mathbf{y}}_\text{a}\text{投影于}\hat{\mathbf{x}}_\text{b}\\
+\hat{\mathbf{x}}_\text{a}\text{投影于}\hat{\mathbf{y}}_\text{b} & \hat{\mathbf{y}}_\text{a}\text{投影于}\hat{\mathbf{y}}_\text{b}
+\end{bmatrix} = 
+\begin{bmatrix}
+\hat{\mathbf{x}}_\text{a}\text{投影于}\hat{\mathbf{x}}_\text{b} &  \hat{\mathbf{x}}_\text{a}\text{投影于}\hat{\mathbf{y}}_\text{b} \\
+\hat{\mathbf{y}}_\text{a}\text{投影于}\hat{\mathbf{x}}_\text{b} & \hat{\mathbf{y}}_\text{a}\text{投影于}\hat{\mathbf{y}}_\text{b}
+\end{bmatrix} ^T \nonumber \\
+&= \begin{bmatrix}
+\hat{\mathbf{x}}_\text{b}\text{投影于}\hat{\mathbf{x}}_\text{a} &  \hat{\mathbf{y}}_\text{b}\text{投影于}\hat{\mathbf{x}}_\text{a} \\
+\hat{\mathbf{x}}_\text{b}\text{投影于}\hat{\mathbf{y}}_\text{a} & \hat{\mathbf{y}}_\text{b}\text{投影于}\hat{\mathbf{y}}_\text{a}
+\end{bmatrix}^T = R_\text{ab}^T \label{eq:2dtransposeaprojection}
+\end{align}
+
+性质\ref{th:2dinverse}可以通过代入性质\ref{th:2dtranspose}直接得到。从几何角度来说有多种理解方式，一种方式是：相当于把原来在$\{\text{a}\}$表达中的表达的，切换了一下，但最终还是在$\{\text{a}\}$中表达，其结果不变；另一种是：将一个物体正转一个角度后再反转回来，得到的结果和不转是一样的。
+
+性质\ref{th:2dinversetranspose}可以直接由性质\ref{th:2dinverse}和性质\ref{th:2dtranspose}得到。
+
+二维旋转看起来非常基础，但也非常重要，因为在平面里很多东西我们可以看得很清楚直观。三维空间画起来很不直观，验证起来很麻烦，然而二维和三维的本质是一样的。因此二维给我们带来的直觉（intuition）对我们理解三维十分重要。
+
+\newpage 
+
+\subsection{三维旋转矩阵}
+\subsubsection{小节概述}
+在这一小节，我们会把从二维的旋转矩阵概念推广至三维。我们分析二维旋转矩阵获得的大部分概念以及他们对应的几何意义和直觉在三维上可以直接适用。我们会和讨论二维旋转矩阵一样，介绍三维旋转矩阵的三个意义：1. 用来表达参照系；2. 对物体进行旋转的操作；3. 切换参照系，并讨论三维旋转矩阵的定义和性质。
+
+\subsubsection{三维旋转矩阵}
+
+和二维的情况完全一样，假设我们有一个三维的固定参照系$\{\text{s}\}$和机体参照系$\{\text{b}\}$。$\{\text{b}\}$的原点同样至始至终与$\{\text{s}\}$的origin保持重合。
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.75]{images/3D_frame_with_b.png}
+  \caption{固定参照系和机体参照系}
+  \label{fig:3droationframes}
+\end{figure}
+
+如图(\ref{fig:3droationframes})，如果没有特殊说明，红色表示x轴，绿色表示y轴，蓝色表示z轴。这个着色的惯例在后文中会一直保持。我们还是一样，把$\{\text{b}\}$的三个基表达在$\{\text{s}\}$中。那按我们在二维旋转中通过把三个基拼在一块得到旋转矩阵的思路，先把三个基写出来
+\begin{align}
+\hat{\mathbf{x}}_\text{sb} &= r_{\text{b}x\rightarrow\text{s}x} \hat{\mathbf{x}}_\text{ss} + r_{\text{b}x\rightarrow\text{s}y}\hat{\mathbf{y}}_\text{ss} + r_{\text{b}x\rightarrow\text{s}z}\hat{\mathbf{z}}_\text{ss}\nonumber\\  
+\hat{\mathbf{y}}_\text{sb} &= r_{\text{b}y\rightarrow\text{s}x}\hat{\mathbf{x}}_\text{ss} + r_{\text{b}y\rightarrow\text{s}y}\hat{\mathbf{y}}_\text{ss} + r_{\text{b}y\rightarrow\text{s}z}\hat{\mathbf{z}}_\text{ss}\nonumber\\  
+\hat{\mathbf{z}}_\text{sb} &= r_{\text{b}z\rightarrow\text{s}x}\hat{\mathbf{x}}_\text{ss} + r_{\text{b}z\rightarrow\text{s}y}\hat{\mathbf{y}}_\text{ss} + r_{\text{b}z\rightarrow\text{s}z}\hat{\mathbf{z}}_\text{ss} \label{eq:intro3dbasis}
+\end{align}
+其中$\hat{\mathbf{x}}_\text{sb}$沿用了二维旋转中的惯例，s表示表达在$\{\text{s}\}$中，b表示是$\{\text{b}\}$的x轴。$r_{\text{b}x\rightarrow\text{s}y}\in\mathbb{R}$代表$\{\text{b}\}$的x轴投影到$\{\text{s}\}$的y轴的大小。注意$r_{\text{b}x\rightarrow\text{s}y}$这个物理量是标量，无论在什么参照系下表达这个值都不变，因此不强调在哪个参照系下表达。把式子(\ref{eq:intro3dbasis})中的三个基拼在一块，即是三维空间中的旋转矩阵$R\in \mathbb{R}^{3\times 3}$，即
+\begin{align}
+R = R_\text{sb} = 
+\begin{bmatrix}
+\hat{\mathbf{x}}_\text{sb} & \hat{\mathbf{y}}_\text{sb} &\hat{\mathbf{z}}_\text{sb}
+\end{bmatrix}
+=
+\begin{bmatrix}
+r_{\text{b}x\rightarrow\text{s}x} & r_{\text{b}y\rightarrow\text{s}x} & r_{\text{b}z\rightarrow\text{s}x}\\
+r_{\text{b}x\rightarrow\text{s}y} & r_{\text{b}y\rightarrow\text{s}y} & r_{\text{b}z\rightarrow\text{s}y}\\
+r_{\text{b}x\rightarrow\text{s}z} & r_{\text{b}y\rightarrow\text{s}z} & r_{\text{b}z\rightarrow\text{s}z}
+\end{bmatrix}
+\end{align}
+
+三维空间的三个基拼在一块是旋转矩阵的原理和二维旋转完全一样，在图(\ref{fig:2drotation})中和前文已有解释。因此不再赘述。
+
+同样和二维旋转矩阵极其类似，三维旋转矩阵有三个意义：
+
+第一，在一个参照系中表达另一个参照系的取向，或者在参照系原点重合的前提下，简称在一个参照系中表达另一个参照系，比如将$\{\text{b}\}$表达在$\{\text{s}\}$中。
+
+第二，在一个参照系中，将物体在三维空间中相对于此参照系进行旋转操作，其旋转产生的变化由旋转矩阵$R$来定义。在三维空间中物体的种类更加丰富一些，不仅包括点、线、向量，还包括平面，各种体：比如球，立方体等。但都没用实质上的区别，因为他们归根结底还是通过点和向量的组合来描述的。
+
+第三，在不同的参照系之中进行切换， 即
+\begin{align}
+R_\text{ac} = R_\text{ab}R_\text{bc} \\
+\mathbf{p}_\text{a} = R_\text{ab}\mathbf{p}_\text{b}
+\end{align}
+
+
+\subsubsection{三维旋转矩阵的定义和性质}
+三维旋转矩阵是用来描述参照系的xyz轴的，因此凡是能对应空间中的xyz轴的，就是三维旋转矩阵，因此我们定义三维旋转矩阵满足以下条件：1. xyz轴，即每列的单位长度为1；2. xyz轴互正交，且符合右手正则。这些条件用代数关系来概括，即
+\begin{mydefinition}
+对于$R\in\mathbb{R}^{3\times3}$，且
+\begin{align}
+R = [\hat{\mathbf{x}} \quad \hat{\mathbf{y}} \quad \hat{\mathbf{z}}]
+\end{align}
+当且仅当：$\hat{\mathbf{x}}\cdot\hat{\mathbf{y}} = 0$、$\hat{\mathbf{y}}\cdot\hat{\mathbf{z}} = 0$、$\hat{\mathbf{z}}\cdot\hat{\mathbf{x}} = 0$、$||\hat{\mathbf{x}}|| = 1$、$||\hat{\mathbf{y}}|| = 1$、$||\hat{\mathbf{z}}|| = 1$、$\textnormal{det}(R) = 1$时，$R$是三维旋转矩阵。 \label{th:3drotation}
+\end{mydefinition}
+
+对于两个三维参照系$\{\text{a}\}$与$\{\text{b}\}$，在$\{\text{a}\}$中表达$\{\text{b}\}$的取向记作$R_\text{ab}$；在$\{\text{b}\}$中表达$\{\text{a}\}$的取向记作$R_\text{ba}$。对于$R_\text{ab}$，$R_\text{ba}$，以及其他旋转矩阵$R$有如下性质： 
+\begin{mytheorem}
+对于三维旋转矩阵$A$和$B$，$AB$也是三维旋转矩阵。\label{th:3dproductclosure}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于三维旋转矩阵$A$、$B$和$C$，有$(AB)C=A(BC)$ \label{th:3dassociative}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于一个点或向量$p\in\mathbb{R}^3$，在$\{\textnormal{a}\}$中表达记作$p_\textnormal{a}$，在$\{\textnormal{b}\}$中表达记作$p_\textnormal{b}$，有$\mathbf{p}_\textnormal{a}=R_\textnormal{ab}p_\textnormal{b}$ \label{th:3dchangeframe}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任意三维参照系$\{\textnormal{c}\}$，有
+$R_\textnormal{ac} = R_\textnormal{ab}R_\textnormal{bc}$
+\end{mytheorem}
+
+\begin{mytheorem}
+$R_\textnormal{ba} = R_\textnormal{ab}^T$  \label{th:3dtranspose}
+\end{mytheorem}
+
+\begin{mytheorem}
+$R_\textnormal{ba} R_\textnormal{ab}=I$  \label{th:3dinverse}
+\end{mytheorem}
+
+\begin{mytheorem}
+$R_\textnormal{ab}^{-1} = R_\textnormal{ab}^T$  \label{th:3dinversetranspose}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于三维旋转矩阵$A$和$B$，一般情况下$AB\neq BA$\label{th:3dcommutative}
+\end{mytheorem}
+
+对于性质\ref{th:3dproductclosure}，；几何角度可以直接沿用二维的思路，即性质\ref{th:2dproductclosure}的几何思路。
+
+对于\ref{th:3dassociative}，代数角度是从矩阵的乘法中直接得到；几何角度可以直接沿用二维的思路，即性质\ref{th:3dassociative}的几何思路。
+
+对于\ref{th:3dchangeframe}，几何角度可以直接沿用二维的思路，即性质\ref{th:2dchangeframe}的思路。
+ 
+对于性质\ref{th:3dtranspose}，几何角度来说，我们从二维旋转矩阵中证明\ref{th:2dtranspose}过程中获得的几何意义在三维中可以直接适用，即两个参照系的基互相投影是相等的，即$r_{\text{b}x\rightarrow\text{a}y} = r_{\text{a}y\rightarrow\text{b}x}$。参考式子(\ref{eq:2dtransposeaprojection})中的推导过程，我们能很快得证性质\ref{th:3dtranspose}。
+
+对于性质\ref{th:3dinverse}，几何角度可以直接沿用二维的思路，即性质\ref{th:3dinverse}的几何思路。
+
+对于性质\ref{th:3dinversetranspose}，由性质\ref{th:3dtranspose}和性质\ref{th:3dinverse}可以直接得到，也可以从定义\ref{th:3drotation}中，把三维旋转矩阵的判定条件拼在一块写成矩阵得到。
+
+对于性质\ref{th:3dcommutative}，代数上直接找两个任意的三维旋转矩阵相乘即可得。从几何角度来说，当旋转和参照系切换都发生的时候，其顺序是重要的，有区别的。旋转的先后会导致得到不一样的结果。即$R_\text{sb}R$和$RR_\text{sb}$的结果肯定是不一样的（$R$是旋转矩阵，$R_\text{sb}$是参照系切换）。因为前者是在$\{\text{b}\}$中旋转，然后将结果在$\{\text{s}\}$中表达；后者是直接在$\{\text{s}\}$中旋转。也就是说两者的区别在于：旋转这一操作发生在两个不同的参照系下（即比如绕$\{\text{s}\}$的x轴旋转和绕$\{\text{b}\}$的x旋转完全不一样），因此当然会得到不一样的结果。
+
+\subsection{三维空间的旋转和速度}
+
+\subsubsection{小节概述}
+哈哈
+
+\subsubsection{绕轴旋转与三维旋转矩阵}
+在我们讨论二维旋转矩阵的时候，我们首先定义的是旋转，即机体参照系$\{\text{b}\}$绕着固定参照系$\{\text{s}\}$旋转，得到一个角度$\theta$，由$\theta$建立二维旋转矩阵的概念。即我们先有旋转的运动，再有旋转矩阵的概念。在三维中，我们还没有定义旋转是怎么样的。
+
+在二维当中，我们定义为绕着垂直于二维平面的轴旋转$\theta$，那么要把这个概念往三维空间推广，一种符合直觉的方式就是绕着某一根轴进行角度为$\theta$的旋转。具体来说，如果我们记这个轴为$\hat{\mathbf{w}}\in \mathbb{R}^3$。$\hat{\mathbf{w}}$仅表示方向，旋转角度的大小已经以$\theta$来记了，因此$\hat{\mathbf{w}}$需要多一个约束为单位向量。那么绕$\hat{\mathbf{w}}$进行$\theta$的旋转就是三维空间中的旋转操作。经过了这种操作，得到一个三维取向，得到对应的三维旋转矩阵为$R$，则我们定义
+\begin{align}
+R = R(\hat{\mathbf{w}}, \theta) = \text{Rot}(\hat{\mathbf{w}}, \theta) \label{eq:3daxisrotation}
+\end{align}
+
+在二维平面中，旋转角$\theta$可以覆盖二维中的全部旋转这一点是显而易见的。在三维空间中，这还适用吗？换句话说，绕任意轴旋转某个角度所导致的取向是否能覆盖三维空间中的全部取向？当然，在这里，我们尚未对三维取向做定义。三维取向就是对参照系xyz轴的描述，但凡满足xyz轴单位长度为1，且满足右手定则的两两正交，就是三维参照系的取向，描述取向的矩阵就是三维旋转矩阵。
+
+描述得更数学一些，即很显然，$\text{Rot}(\hat{\mathbf{w}}, \theta)$会构成的所有三维旋转矩阵的子集，那么三维旋转矩阵是否为$\text{Rot}(\hat{\mathbf{w}}, \theta)$的子集？实际上，这正是欧拉旋转定理（Euler's rotation theorem），即：对于任意三维取向$R$，即三维旋转矩阵$R$，存在$\hat{\mathbf{w}}$和$\theta$，使得式子(\ref{eq:3daxisrotation})成立。
+
+我们可以先简单做一下自由度分析。三维旋转矩阵$R$有9个元素，有6个约束，分别为xyz轴的长度为1（单元向量），和x轴-y轴正交、y轴-z轴正交、z轴-x轴正交（点乘为0，或者两周叉乘结果为另一根轴），因此有3个自由度。而$\hat{\mathbf{w}}$和$\theta$有4个元素，1个约束，即$\hat{\mathbf{w}}$为长度为1，因此也是3个自由度，与$R$自由度一样。因此从自由度角度来说，三维旋转矩阵与绕轴旋转是等价的。
+
+当然，自由度分析只是一个必要条件，并不能构成证明。在这里我们提供一个几何上证明的思路。我们把原本轴参照系记为$\{\text{a}\}$，另一个任意的参照系记作$\{\text{a}'\}$，$\{\text{a}\}$中的标记对应在$\{\text{a}'\}$都会加上$'$。取任意一个$\{\text{a}\}$的轴，比如z轴，如果z轴绕着某一跟轴旋转后转到了z$'$轴的位置，那我们不难发现，这根轴必然位于z轴和z$'$轴在单位球的球面直接连接的最短弧线的中垂线上，这根中垂线其实就是球的直径圆。对于x轴和y轴同理，这样我们会得到三个不同的球的直径圆。那显然，如果旋转轴存在，必然同时在这三个圆上，即这三个圆有共点。而且不仅得有共点，还得转过角度相同角度，xyz轴同时对齐x$'$y$'$z$'$轴。
+
+因为这一切都发生在球面上，非常不符合我们的直觉。我们想办法把球面映射到一个平面上，然后用我们最熟悉的平面几何去分析这个问题那就简单得多了。在球面上的直径圆弧线是两点的之间的最短距离，对应平面的直线，那我们把xyz轴两两相连，得到的应该是一个类似平面的三角形的概念。假设存在一种球面到平面的映射，那么我们猜测这个问题会变成：平面上有一个三角形和另一个与之全等的三角形，是否存在一个点，绕这个点旋转一定角度，是否能从三角形得到全等的三角形。答案是肯定的，证明这个问题具体不展开，有兴趣可以自己联系。
+
+解决在平面上的问题，那我们找到这种球面到平面的映射就大功告成了。但遗憾的是，并不存在这种简单映射或投影关系可以保留球面到平面上的一切性质。但是这个问题并不是无解了，因为我们可以在球面上建立球面几何，建立和平面几何一样的公理体系。幸运的是，球面几何中，对于上述命题的证明涉及到平面几何的中垂线，三角形的平移，三角形的旋转，三角形的边边边全等判定的概念，在球面几何中全部都能适用，因此平面三角形的绕点旋转的问题和球面上绕轴旋转的问题完全等价。在这里就不讨论球面几何的细节了。主要就是介绍一下把球面转化为平面的思路。
+
+总之，欧拉旋转定理是成立的，即任何三维旋转都可以由绕某个轴旋转一个角度而得到，这样得到的旋转和全体旋转矩阵这两个集合是同一个集合。
+
+因此我们描述任何三维旋转矩阵，都可以用描述旋转轴和旋转角的方式。因为毕竟三维旋转矩阵有9个元素，很麻烦，而用轴和角就简洁很多。我们把这种描述方式，或者说表示法叫做轴角表示法或轴角表示（axis-angle representation）。
+
+
+\subsubsection{旋转的速度}
+在前文讨论的旋转矩阵中，我们刻意回避了时间以及速度的概念。我们研究空间的物体的运动状态，必然是要讨论速度的。讨论在一个参照系表达另一个参照系时，我们关注的都是在某一瞬间的情况。讨论旋转时，我们讨论的都是旋转开始前和旋转结束后的两个瞬间。我们没有去讨论经过时间推移的连续变化。但现实当中，旋转肯定是随着时间的推移连续地进行的。旋转会造成空间中参照系取向的变化。取向随时间的变化即是速度。
+
+我们现在有两个描述三维取向的方法，即旋转矩阵$R$和轴角表达法$\text{Rot}(\hat{\mathbf{w}},\theta)$。旋转矩阵表达的某个参照系，比机体参照系$\{\text{b}\}$的坐标轴在空间中的方向，其实也就是坐标轴作为单元向量的箭头所指的位置。当$\{\text{b}\}$发生旋转时，坐标轴箭头所指位置发生变化。如果我们把$\{\text{b}\}$以及其变化在固定参照系$\{\text{s}\}$中表达，即有：
+\begin{align}
+ R_\text{sb}(t+\Delta t) &=
+ \begin{bmatrix}
+ r_{\text{b}x\rightarrow\text{s}x}(t+\Delta t) &  r_{\text{b}z\rightarrow\text{s}x}(t+\Delta t) &  r_{\text{b}z\rightarrow\text{s}x}(t+\Delta t)\\
+ r_{\text{b}x\rightarrow\text{s}y}(t+\Delta t) &  r_{\text{b}y\rightarrow\text{s}y}(t+\Delta t) &  r_{\text{b}z\rightarrow\text{s}y}(t+\Delta t)\\
+ r_{\text{b}x\rightarrow\text{s}z}(t+\Delta t) &  r_{\text{b}y\rightarrow\text{s}z}(t+\Delta t) &  r_{\text{b}z\rightarrow\text{s}z}(t+\Delta t)\\
+\end{bmatrix}   \label{eq:rotationframechange}
+\end{align}
+
+我们对式子(\ref{eq:rotationframechange})取微分，即取$\Delta t\rightarrow 0$，即获得$\{\text{b}\}$的变化速率，即
+\begin{align}
+\frac{d}{dt}R_\text{sb}(t) &= \begin{bmatrix}
+ dr_{\text{b}x\rightarrow\text{s}x}/dt &  dr_{\text{b}z\rightarrow\text{s}x}/dt &  dr_{\text{b}z\rightarrow\text{s}x}/dt\\
+ dr_{\text{b}x\rightarrow\text{s}y}/dt &  dr_{\text{b}y\rightarrow\text{s}y}/dt &  dr_{\text{b}z\rightarrow\text{s}y}/dt\\
+ dr_{\text{b}x\rightarrow\text{s}z}/dt &  dr_{\text{b}y\rightarrow\text{s}z}/dt &  dr_{\text{b}z\rightarrow\text{s}z}/dt
+\end{bmatrix} \nonumber\\
+ &= \begin{bmatrix}
+ \dot{r}_{\text{b}x\rightarrow\text{s}x} &  \dot{r}_{\text{b}z\rightarrow\text{s}x} &  \dot{r}_{\text{b}z\rightarrow\text{s}x}\\
+ \dot{r}_{\text{b}x\rightarrow\text{s}y} &  \dot{r}_{\text{b}y\rightarrow\text{s}y} &  \dot{r}_{\text{b}z\rightarrow\text{s}y}\\
+ \dot{r}_{\text{b}x\rightarrow\text{s}z} &  \dot{r}_{\text{b}y\rightarrow\text{s}z} &  \dot{r}_{\text{b}z\rightarrow\text{s}z}
+\end{bmatrix} \label{eq:rotationmatrixrateofchange}
+\end{align}
+我们记
+\begin{align}
+\frac{d}{dt}R_\text{sb} = \dot{R}_\text{sb}
+\end{align}
+$\dot{R}_\text{sb}$的意义是，在$\{\text{s}\}$中表达$\{\text{b}\}$的xyz轴的变化速率，也就是$\{\text{b}\}$相对于$\{\text{s}\}$的速度，即参照系的运动速度。注意在这里要区分相对于$\{\text{s}\}$的速度和在$\{\text{s}\}$中表达不是一个概念。考虑到这里只有两个参照系，$\{\text{b}\}$相对$\{\text{s}\}$的速度只能在$\{\text{s}\}$或$\{\text{b}\}$里表达，在这里我们先讨论再$\{\text{s}\}$中表达，在$\{\text{b}\}$中表达我们在后面讨论。
+
+如果有第三个参照系$\{\text{a}\}$，那么$\{\text{b}\}$相对于$\{\text{a}\}$的速度既可以在$\{\text{a}\}$表达，也可以在$\{\text{s}\}$中表达，也可以在$\{\text{b}\}$表达。因此其实要表示速度需要写清楚三个参照系，比如$\{\text{b}\}$相对于$\{\text{a}\}$的速度在$\{\text{s}\}$中表达，发生运动的参照系$\{\text{b}\}$，运动相对的参照系$\{\text{a}\}$，和表达速度的参照系$\{\text{s}\}$。在这种情况下，我们会用$\dot{R}_\text{ab}^{\text{a}}$来表示。[这里的notation有待商榷]
+
+当然，这种三个参照系同时出现的情况比较少，目前我们只需要讨论两个参照系的情况。总之，$\dot{R}_\text{sb}$中的s的含义有两个，一个是$\{\text{b}\}$相对于$\{\text{s}\}$，一个是在$\{\text{b}\}$中表达。为了方便，我们把上标的s省略了，即
+\begin{align}
+\dot{R}_\text{sb} = \dot{R}_\text{sb}^\text{s} \label{eq:threeframerotationrepresentation}
+\end{align}
+
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.6]{images/projection_rate_of_change.png}
+  \caption{$\{\text{b}\}$的x轴到$\{\text{s}\}$的y轴投影的变化速度}
+  \label{fig:velocityprojection}
+\end{figure}
+
+如图\ref{fig:velocityprojection}并观察式子(\ref{eq:rotationmatrixrateofchange})，xyz轴的变化速度其实就是$\{\text{b}\}$的坐标轴到$\{\text{s}\}$的坐标轴投影的变化速度。[TODO：图要重画，标记符号不对]
+
+我们从旋转矩阵的角度，即坐标轴的位置变化讨论了速度的表达方式。我们能否将坐标轴位置变化的速度，即$\dot{R}=\dot{R}_\text{sb}$与轴角定义的旋转联系在一起？我们描述旋转最简单的方式是绕一个轴进行$\theta$的旋转，那么描述旋转速度最简单的方式显然应当是绕着一个轴进行角速度$\dot{\theta}$的旋转。$\{\text{b}\}$绕着$\hat{\mathbf{w}}_\text{s}$以$\dot{\theta}$的旋转时（$\hat{\mathbf{w}}_\text{s}$表达在$\{\text{s}\}$种、中），$\{\text{b}\}$的xyz轴的速度表达在$\{\text{s}\}$中应当为
+\begin{align}
+\dot{\hat{\mathbf{x}}}_\text{sb} = (\hat{\mathbf{w}}_\text{s}\dot{\theta})\times \hat{\mathbf{x}}_\text{sb} \nonumber \\
+\dot{\hat{\mathbf{y}}}_\text{sb} = (\hat{\mathbf{w}}_\text{s}\dot{\theta})\times \hat{\mathbf{y}}_\text{sb} \nonumber \\
+\dot{\hat{\mathbf{z}}}_\text{sb} = (\hat{\mathbf{w}}_\text{s}\dot{\theta})\times \hat{\mathbf{z}}_\text{sb} \label{eq:axistipvelocity}
+\end{align}
+我们记
+\begin{align}
+\mathbf{w}_\text{s} = \mathbf{w}_\text{s}\dot{\theta}
+\end{align}
+把式子(\ref{eq:axistipvelocity})组合成矩阵的形式为
+\begin{align}
+\dot{R}_\text{sb} = \begin{bmatrix}
+\dot{\hat{\mathbf{x}}}_\text{sb} & \dot{\hat{\mathbf{y}}}_\text{sb} & \dot{\hat{\mathbf{z}}}_\text{sb} 
+\end{bmatrix} = 
+\begin{bmatrix}
+\mathbf{w}_\text{s} \times \hat{\mathbf{x}}_\text{sb} & \mathbf{w}_\text{s} \times \hat{\mathbf{y}}_\text{sb} & \mathbf{w}_\text{s} \times \hat{\mathbf{z}}_\text{sb}
+\end{bmatrix} \label{eq:axistipvelocitymatrix}
+\end{align}
+
+那实际上，式子(\ref{eq:axistipvelocitymatrix})中的运算过程就类似于$w \times R$，但是我们并没有对$\mathbb{R}^3$和$\mathbb{R}^{3\times 3}$进行叉乘的定义，因此我们需要在$w$上动些手脚，把$w\times$凑成一个矩阵，这样就能自然地与其他旋转矩阵进行矩阵乘法。这就意味着我们可以简练地将本来靠向量表达的轴角表达与其他旋转矩阵融为一体。这种手脚显然是可以做到的，因为$\mathbf{a} \times \mathbf{b}$可以被理解为对$\mathbf{b}$中element的线性重组，而重组方法由$\mathbf{a}$和$\times$运算来定义，那既然是一个线性的运算，那么理应可以写成矩阵的形式。令$\mathbf{w}_\text{s} = [w_{\text{s}1} \, w_{\text{s}2} \, w_{\text{s}3}]\in \mathbb{R}^3$，那么紧随叉乘的定义，我们可以构造出
+\begin{align}
+W_\text{s}=\begin{bmatrix}
+0&-w_3&w_2\\
+w_3&0&-w_1\\
+-w_2&w_1&0
+\end{bmatrix}
+\end{align}
+使得
+\begin{align}
+\dot{R}_\text{sb} = W_\text{s}R_\text{sb} = \begin{bmatrix}
+\mathbf{w}_\text{s} \times \hat{\mathbf{x}}_\text{sb} & \mathbf{w}_\text{s} \times \hat{\mathbf{y}}_\text{sb}& \mathbf{w}_\text{s} \times \hat{\mathbf{z}}_\text{sb} 
+\end{bmatrix} \label{eq:skewmatrixproduct}
+\end{align}
+
+我们将$W_\text{s}$记作$[\mathbf{w}_\text{s}]$，即
+对于$\mathbf{a}=\langle a_1 \; a_2 \;a_3\rangle\in\mathbb{R}^3$，定义运算符号$[\mathbf{a}]$为$\mathbb{R}^3\rightarrow \mathbb{R}^{3\times 3}$，有
+\begin{align}
+[\mathbf{a}] = \begin{bmatrix}
+0 & -a_3 & a_2 \\
+a_3 & 0 & -a_1\\
+-a_2 & a_1 & 0
+\end{bmatrix} \label{eq:skewsymmetricdef}
+\end{align} 
+实际上$[\mathbf{a}]$被称为$\mathbf{a}$的斜对称矩阵（skew symmetric matrix），因为$[a]$特殊的对称性，即
+\begin{align}
+[\mathbf{a}]^T = -[\mathbf{a}] \label{eq:skewtransposeproperty}
+\end{align}
+
+利用式子(\ref{eq:skewsymmetricdef})，把式子(\ref{eq:skewmatrixproduct})式子重写一下
+\begin{align}
+\dot{R}_\text{sb} = [\mathbf{w}_\text{s}]R_\text{sb} \label{eq:skewproduct}
+\end{align}
+
+在前文讨论式子(\ref{eq:threeframerotationrepresentation})的时候，我们说过，$\dot{R}_\text{sb}$不仅可以在$\{\text{s}\}$中表达，还可以在$\{\text{b}\}$中表达，即$\dot{R}_\text{sb}^{\text{b}}$。根据性质\ref{th:3dchangeframe}可得
+\begin{align}
+\dot{R}_\text{sb}^{\text{b}} = R_\text{bs} \dot{R}_\text{sb}^{\text{s}} = R_\text{bs} \dot{R}_\text{sb}
+\end{align}
+
+实际上，$\dot{R}_\text{sb}^{\text{b}}$就是在$\{\text{b}\}$当中表达$\{\text{b}\}$自己的速度，我们把$\mathbf{w}_\text{s}$在$\{\text{b}\}$当中表达记作$\mathbf{w}_\text{b}$，那么有根据式子(\ref{eq:skewproduct})
+\begin{align}
+\dot{R}_\text{sb}^{\text{b}} = [\mathbf{w}_\text{b}]R_\text{bb} = [\mathbf{w}_\text{b}] \label{eq:computersbb}
+\end{align}
+但$\dot{R}_\text{sb}^{\text{b}}$不等同于$\dot{R}_\text{bb}$，因为$R_\text{bb}=I$，所以$\dot{R}_\text{bb}=0$。为了避免这种尴尬的定义，我们要引入一个参照系记作$\{\text{\underline{\underline{b}}}\}$，这个参照系时时刻刻与$\{\text{b}\}$重合，不同之处在于$\{\text{\underline{\underline{b}}}\}$是一个静止参照系，即惯性系。这看似是荒谬的，$\{\text{\underline{\underline{b}}}\}$时时刻刻都在变化，怎么会是一个惯性系呢？但实际上，这是合理的。一种理解方式是，比如说我们在$\{\text{b}\}$的运动轨迹上每处都设置一个惯性系，当$\{\text{b}\}$运动到某个位置时，我们就把这个位置的惯性系调出来使用。打个比方，比如我们在开车，每经过一次测速仪时都会测到一个速度，而测速仪安装在惯性系上。如果我们在行驶的轨迹上的每个位置都安装着连续的，无限多的测速仪来检测我们的速度。虽然我们经过测速仪位置都不一样，我们感觉测速仪总是和我们位置一致，但是这并不妨碍测速仪是安装在惯性系的事实，也不影响测速仪对车速的检测。因此，我们把这种速度记作$\dot{R}_\text{\underline{\underline{b}}b}$，意为在$\{\text{\underline{\underline{b}}}\}$中表达在$\{\text{b}\}$相对于$\{\text{\underline{\underline{b}}}\}$的速度。实际上同样的原则不仅适用于$\dot{R}$，也适用于$\mathbf{w}$。把$\mathbf{w}_\text{b}$写完整应该为：$\mathbf{w}_\text{sb}^{\text{b}}$。则有
+\begin{align}
+\dot{R}_\text{\underline{\underline{b}}b} =\dot{R}_\text{\underline{\underline{b}}b}^{\text{\underline{\underline{b}}}} =  \dot{R}_\text{sb}^{\text{b}} = [\mathbf{w}_\text{b}] = [\mathbf{w}_\text{sb}^{\text{b}}] = [\mathbf{w}_\text{\underline{\underline{b}}b}^{\text{\underline{\underline{b}}}}]
+\end{align}
+
+需要注意的是，之所以$\dot{R}_\text{\underline{\underline{b}}b} =  \dot{R}_\text{sb}^{\text{b}}$，即$\{\text{b}\}$相对于$\{\text{s}\}$的速度在$\{\text{s}\}$中表达等于$\{\text{b}\}$相对$\{\text{\underline{\underline{b}}}\}$的速度在$\{\text{\underline{\underline{b}}}\}$中表达，是因为$\{\text{\underline{\underline{b}}}\}$和$\{\text{s}\}$都是静止参照系。比如说一个在动的参照系$\{\text{a}\}$，那么$\dot{R}_\text{\underline{\underline{b}}b}\neq \dot{R}_\text{ab}^{\text{b}}$，针对$\mathbf{w}$同理。我们把相对于静止坐标系的速度称为绝对速度，因此相对于静止参照系的旋转速度即为绝对旋转速度。绝对速度不随着改变参照系的变化而变化。
+
+\subsubsection{标记法则}
+在这里，我们统一标记法则。标记法则在本讲义全文都适用。
+
+\begin{enumerate}
+\item 对于标量，我们会用斜体的小写英语字母或希腊字母表示，比如$a$、$b$、$c$、$i$、$j$、$n$、$p$、$q$、$r$、$s$、$t$、$w$、$x$、$y$、$z$、$\theta$、$\alpha$、$\beta$等。在这里标量不仅包括实数集，也包括自然数集或者有理数集，例如表示序号的$n$或者$i$。
+
+\item 对于二维或者三维向量，我们会用加粗的罗马体（正体）小写英语字母表示，比如$\mathbf{a}$、$\mathbf{b}$、$\mathbf{c}$、$\mathbf{i}$、$\mathbf{j}$、$\mathbf{n}$、$\mathbf{p}$、$\mathbf{q}$、$\mathbf{r}$、$\mathbf{s}$、$\mathbf{t}$、$\mathbf{w}$、$\mathbf{x}$、$\mathbf{y}$、$\mathbf{z}$等。
+
+\item 对于强调是单位向量的，我们会用$\hat{}$加在向量上方表示。比如$\hat{\mathbf{a}}$、$\hat{\mathbf{b}}$、$\hat{\mathbf{c}}$、$\hat{\mathbf{i}}$、$\hat{\mathbf{j}}$、$\hat{\mathbf{n}}$、$\hat{\mathbf{p}}$、$\hat{\mathbf{q}}$、$\hat{\mathbf{r}}$、$\hat{\mathbf{s}}$、$\hat{\mathbf{t}}$、$\hat{\mathbf{w}}$、$\hat{\mathbf{x}}$、$\hat{\mathbf{y}}$、$\hat{\mathbf{z}}$等。
+
+\item 对于矩阵，我们会用斜体的大写英语字母表示，比如$A$、$B$、$C$、$J$、$M$、$Q$、$R$、$T$等。
+
+\item 上述字母规则还可以用来表示函数，当表示函数时，其函数的输出结果为字母格式所对应的标量、向量或者矩阵。
+
+\item 我们会用的罗马体的大写或小写英语字母来表示一个东西的名字，比如参照系的名字（比如b），某个点的名字（比如P）、某个圆的名字（比如O），某个轴的名字（比如x）。区别于标量或者向量，在这里我们强调的是名字所代表的东西，而不是对应的值；而标量和向量强调的是值。
+
+\item 对于特殊的标记，比如斜对称矩阵$[\mathbf{a}]$，比如表示参照系$\{\text{b}\}$，我们会在专门定义。
+
+\item 对于一个下标只有一个字母或数字的标记，会有两种可能，
+
+第一种：这个物理量表达在下标字母所表示的参照系中，比如$\mathbf{w}_\text{s}$表示在$\{\text{s}\}$表示向量$\mathbf{w}$。
+
+第二种：表示这个物理量是字母所代表的东西中的一个固有属性或物理量，比如$\hat{\mathbf{x}}_\text{b}$，代表$\{\text{b}\}$的x轴，在这里并强调x轴是个单元向量。
+对于第一种与第二种的区分，结合上下文应该是显而易见的。
+
+\item 对于下标字母有两部分字母或数字的，第一部分的字母表示这个物理量表达在第一部分字母对应的参照系中，第二部分代表这个物理量是第二部分所代表参照系的固有的属性或物理量。第一部分和第二部分的分界一般来说都是显而易见的。最典型的例子是两个字母：比如$R_\text{sb}$。
+
+另一个例子是$R_\text{\underline{\underline{b}}b}$，在这里$\text{\underline{\underline{b}}}$是第一部分，$\text{b}$是第二部分。
+
+还有一个例子是$R_\text{LiLj}$，在这里$\text{Li}$是第一部分，$\text{Lj}$是第二部分。
+
+\item 对于下标字母由一长串罗马体字母组成的，此时下标一般是对物理量的描述，此时下标字母所代表的意义应该是显而易见的。
+
+\item 我们用符号上的$\dot{}$来表示对符号中每个元素对时间的全微分，比如$\dot{R}$和$\dot{\hat{\mathbf{x}}}$。点的数量表示微分的次数。
+
+\item 对时间全微分的一般得到的是速度，我们用有两部分字母下标而没有上标的，比如$\dot{R}_\text{ab}$，表示在$\{\text{a}\}$中表达$\{\text{b}\}$相对于$\{\text{a}\}$的速度。对于有两部分字母下标也有上标的，比如$\dot{R}_\text{ab}^{\text{c}}$，表示在$\{\text{c}\}$中表示$\{\text{b}\}$相对于$\{\text{a}\}$的速度。同样的原则也适用于加速度和其他有相对关系的物理量。
+\end{enumerate}
+
+\subsubsection{有关旋转速度的性质}
+我们在这里给出一些重要的关于三维旋转速度和与旋转紧密相关的性质。对于任意旋转矩阵$R$，静止参照系$\{\text{s}\}$，机体参照系$\{\text{b}\}$，与机体总是重合的静止参照系$\{\text{\underline{\underline{b}}}\}$，任意的参照系$\{\text{a}\}$、$\{\text{c}\}$和$\{\text{d}\}$，以及$\{\text{b}\}$相对$\{\text{a}\}$发生旋转，且旋转轴角速度$\mathbf{w}=\hat{\mathbf{w}}\dot{\theta}$，那么
+
+\begin{mydefinition}
+对于$\mathbf{a}=\langle a_1 \; a_2 \;a_3\rangle\in\mathbb{R}^3$，定义运算符号$[\mathbf{a}]$为$\mathbb{R}^3\rightarrow \mathbb{R}^{3\times 3}$，有
+\begin{align}
+[\mathbf{a}] = \begin{bmatrix}
+0 & -a_3 & a_2 \\
+a_3 & 0 & -a_1\\
+-a_2 & a_1 & 0
+\end{bmatrix}
+\end{align} \label{def:skewsymmetric}
+\end{mydefinition}
+
+\begin{mydefinition}
+对于具有相对关系的矩阵物理量$X$和向量物理量$\mathbf{x}$，定义$X_\textnormal{ab}^\textnormal{c}$为$\{\textnormal{b}\}$相对于$\{\textnormal{a}\}$的$X$物理量在$\{\textnormal{c}\}$中表达；$\mathbf{x}_\textnormal{ab}^\textnormal{c}$同理。$X$可以是比如$\dot{R}$，$\mathbf{x}$可以是比如$\mathbf{w}$和$\hat{\mathbf{w}}$，这类表示与速度有关的物理量。
+\end{mydefinition}
+
+\begin{mytheorem}
+$\mathbf{x}_\textnormal{ab}^{\textnormal{c}} = R_\textnormal{cd} \mathbf{x}_\textnormal{ab}^{\textnormal{d}} $ ，将速度写在不同的参照系 \label{th:relativespeedchangeframe}
+\end{mytheorem}
+
+
+\begin{mytheorem}
+$X_\textnormal{ab}^{\textnormal{c}} = R_\textnormal{cd} X_\textnormal{ab}^{\textnormal{d}} $ ，将速度写在不同的参照系 \label{th:relativespeedmatrixchangeframe}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任意$\mathbf{v}\in\mathbb{R}^3$，$[\mathbf{v}] = -[\mathbf{v}]^T $ \label{th:skewsymmetric}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任意$\mathbf{v}\in\mathbb{R}^3$，$R[\mathbf{v}]R^T = [R\mathbf{v}]$，相当于交换叉乘左右两边 \label{th:skewrvr}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任意$\mathbf{p}\in\mathbb{R}^3$和$\mathbf{q}\in\mathbb{R}^3$，$R_\textnormal{sb}(\mathbf{p}_\textnormal{s} \times \mathbf{q}_\textnormal{s}) = \mathbf{p}_\textnormal{b} \times \mathbf{q}_\textnormal{b}$，叉乘运算不受参照系影响 \label{th:crossproductchangeframe}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\dot{R}_\textnormal{ab} = [\mathbf{w}_\textnormal{ab}]R_\textnormal{ab}$，通过旋转轴和角速度求坐标轴速度（参照系取向变化速率）方法一\label{th:rabvelocity}
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\mathbf{w}_\textnormal{ab}] = \dot{R}_\textnormal{ab}R_\textnormal{ab}^{-1}$，通过坐标轴速度（参照系取向变化速率）求旋转轴方法一\label{th:computewab}
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\mathbf{w}_\textnormal{ab}^\textnormal{b}] = R_\textnormal{ab}^{-1}\dot{R}_\textnormal{ab}$，通过坐标轴速度（参照系取向变化速率）求旋转轴方法二 \label{th:computewabb}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\mathbf{w}_\textnormal{ba}^\textnormal{b} = -\mathbf{w}_\textnormal{ab}^\textnormal{b}$，两个参照系的相对运动在旋转轴的体现 \label{th:reverserelativemotion}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\dot{R}_\textnormal{ba} = -[\mathbf{w}_\textnormal{ab}^\textnormal{b}]R_\textnormal{ba}$ ，通过旋转轴和角速度求坐标轴速度（参照系取向变化速率）方法二\label{th:computedotrba}
+\end{mytheorem}
+
+\begin{mytheorem}
+$-[\mathbf{w}_\textnormal{ab}^\textnormal{b}] = \dot{R}_\textnormal{ba}R_\textnormal{ba}^{-1}$，通过坐标轴速度（参照系取向变化速率）求旋转轴方法三 \label{th:computeminuswabb}
+\end{mytheorem}
+
+\begin{mytheorem}
+$ \dot{R}_\textnormal{ba} = \dot{R}_\textnormal{ab}^T$，两个参照系的相对运动在坐标轴速度（参照系取向变化速率）的体现  \label{th:velocitytranspose}
+\end{mytheorem}
+
+\begin{mytheorem}
+$R_{\textnormal{\underline{\underline{b}}b}}^\textnormal{\underline{\underline{b}}} = R_{\textnormal{sb}}^{\textnormal{b}} $，相对于静止参照系的绝对旋转速度无关参照系  \label{th:bstarvelocity}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\dot{R}_\textnormal{ac}^\textnormal{a}
+ = \dot{R}_\textnormal{ab}^\textnormal{a} + \dot{R}_\textnormal{bc}^\textnormal{a} $，速度的相对性 [TODO 证明]  \label{th:velocityrelativity}
+\end{mytheorem}
+
+下面对这些性质一一证明并作解释。
+
+\begin{proof}[\proofname\ \ref{th:relativespeedchangeframe}]
+可以通过性质\ref{th:3dchangeframe}直接证明。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:skewsymmetric}]
+直接通过观察定义\ref{def:skewsymmetric}即得。性质\ref{th:skewsymmetric}的几何意义在于叉乘的交换位置导致方向相反。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:skewrvr}]
+通过直接把矩阵乘法写出来而得到。也可以通过式子(\ref{eq:skewproduct})和式子(\ref{eq:computersbb})结合性质\ref{th:relativespeedchangeframe}得到，即
+\begin{align}
+[R_\text{bs} \mathbf{w}_{\text{sb}}^{\text{s}}] =\dot{R}_{\text{sb}}^{\text{b}} = [\mathbf{w}_{\text{sb}}^{\text{b}}] = R_{\text{bs}} \dot{R}_{\text{sb}}^{\text{s}} = R_{\text{bs}} [\mathbf{w}_{\text{sb}}^{\text{s}}]R_\text{sb} = R_{\text{bs}} [\mathbf{w}_{\text{sb}}^{\text{s}}]R_\text{bs}^T
+\end{align}
+取$R=R_\text{bs}$和$\mathbf{v}=\mathbf{w}_{\text{sb}}^{\text{s}}$即得证。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:crossproductchangeframe}]
+\begin{align}
+\mathbf{p}_\text{s} \times \mathbf{q}_\text{s} &= R_\text{sb} (\mathbf{p}_\text{b} \times \mathbf{q}_\text{b}) \nonumber \\
+(R_\text{sb} \mathbf{p}_\text{b}) \times (R_\text{sb} \mathbf{q}_\text{b}) &= R_\text{sb}[\mathbf{p}_\text{b}]\mathbf{q}_\text{b} \nonumber \\
+[R_\text{sb}\mathbf{p}_\text{b}] R_\text{sb} \mathbf{q}_\text{b} &= R_\text{sb}[\mathbf{p}_\text{b}](R^T_\text{sb}R_\text{sb})\mathbf{q}_\text{b} \nonumber \\
+([R_\text{sb}\mathbf{p}_\text{b}]) R_\text{sb} \mathbf{q}_\text{b} &= (R_\text{sb}[\mathbf{p}_\text{b}]R^T_\text{sb})R_\text{sb}\mathbf{q}_\text{b}
+\end{align}
+结合性质\ref{th:skewrvr}逆推即可得证。性质\ref{th:crossproductchangeframe}的几何意义在于在叉乘运算结果不受参照系影响，这个几何意义应该是显然的。
+\end{proof}
+
+
+\begin{proof}[\proofname\ \ref{th:rabvelocity}]
+在式子(\ref{eq:skewproduct})中已经证明过。注意$\{\text{a}\}$是否是静止参照系并不影响性质\ref{th:rabvelocity}的正确性。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:computewab}]
+通过性质\ref{th:rabvelocity}移项后可以直接得到。性质\ref{th:computewab}的意义在于证明了可以从参照系坐标轴的变化速率速度来得到旋转轴的信息并给出了计算方法。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:computewabb}]
+在证明性质\ref{th:skewrvr}的过程中可直接同理获得。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:reverserelativemotion}]
+通过几何的直觉，$\{\text{b}\}$相对于$\{\text{a}\}$的速度就是$\{\text{a}\}$相对于$\{\text{b}\}$的速度取负号。当然，这两个速度需要在同一个参照系下表达。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:computedotrba}]
+将性质\ref{th:reverserelativemotion}代入性质\ref{th:rabvelocity}即可得证。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:computeminuswabb}]
+通过性质\ref{th:computedotrba}移项可以直接得到。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:velocitytranspose}]
+通过对性质\ref{th:3dtranspose}取微分即可得。
+\end{proof}
+
+\begin{proof}[\proofname\ \ref{th:bstarvelocity}]
+从几何角度来说，因为$\{\text{\underline{\underline{b}}}\}$相对$\{\text{s}\}$是静止的，因此$\{\text{b}\}$相对$\{\text{s}\}$或任何静止参照系的速度都是一样的，因此将这个速度表达在同一个参照系下应当是相同的。
+\end{proof}
+
+
+
+\subsection{旋转与矩阵指数}
+\subsubsection{小节概述}
+\subsubsection{矩阵指数}
+我们观察性质\ref{th:rabvelocity}
+\begin{align*}
+\dot{R}_\textnormal{ab} = [\mathbf{w}_\textnormal{ab}]R_\textnormal{ab}
+\end{align*}
+这其实是一个非常特殊的形式，即
+\begin{align}
+\dot{X}(t) = AX(t)
+\end{align}
+我们知道在代数当中，微分方程
+\begin{align}
+\dot{x}(t) = ax(t)
+\end{align}
+的解是
+\begin{align}
+x(t) = e^{at}x(0) \label{eq:lineardifeq}
+\end{align}
+其中
+\begin{align}
+e^{a} = 1 + a + \frac{a^2}{2!} + \frac{a^3}{3!} + \cdots \label{eq:defexponential}
+\end{align}
+一种理解式子(\ref{eq:defexponential})的方式为：解式子(\ref{eq:lineardifeq})这个微分方程凑出来的，即把按多项式求导公式即$dx^n=nx^{n-1}dx$，其中每个多项式指数和系数提取出来就能得到式子(\ref{eq:defexponential})。
+
+那我们能否用同样的思路去凑出一个矩阵的式子呢？即对于微分方程$\dot{\mathbf{x}}(t) = A\mathbf{x}(t)$
+由于
+\begin{align}
+\frac{d}{dt} (I + At +\frac{(At)^2}{2!} + \frac{(At)^3}{3!} + \cdots) &= A + A^2t + 
+\frac{A^3t^2}{2!} + \cdots \nonumber \\
+&= A(I + At +\frac{(At)^2}{2!} + \frac{(At)^3}{3!} + \cdots)
+\end{align}
+所以我们可以直接把式子(\ref{eq:defexponential})定义照搬，即
+\begin{align}
+e^{A} = 1 + A + \frac{A^2}{2!}  + \frac{A^3}{3!} + \cdots \label{eq:matrixexponentialdefinition}
+\end{align}
+因此有$\dot{\mathbf{x}}(t) = A\mathbf{x}(t)$的解为
+\begin{align}
+\mathbf{x}(t) = e^{At}\mathbf{x}(0) \label{eq:vectordifeqsolution}
+\end{align}
+那这样一来，式子(\ref{eq:vectordifeqsolution})和性质\ref{th:rabvelocity}就对上了。有一点小区别就是性质\ref{th:rabvelocity}里等式左边是矩阵，式子(\ref{eq:vectordifeqsolution})左边是向量，但这其实不影响。因为三个向量拼起来就是矩阵，因此对于微分方程
+\begin{align}
+\dot{R}_\textnormal{ab}(t) = [\mathbf{w}_\textnormal{ab}]R_\textnormal{ab}(t) \label{eq:matrixdifeq}
+\end{align}
+的解为
+\begin{align}
+R_\textnormal{ab}(t) = e^{[\mathbf{w}_\textnormal{ab}]t}R_\textnormal{ab}(0) \label{eq:matrixdifeqsolution}
+\end{align}
+考虑到$[\mathbf{w}_\textnormal{ab}]=[\hat{\mathbf{w}}_\textnormal{ab}\dot{\theta}] =[\hat{\mathbf{w}}_\textnormal{ab}]\dot{\theta}$，并注意到式子\ref{eq:matrixexponentialdefinition}当中，$A$是一个常量矩阵，即$A$不随时间变化而变化，因此$[\hat{\mathbf{w}}_\textnormal{ab}\dot{\theta}]$在0到$t$过程当中不变，那么$\int \dot{\theta}dt = \dot{\theta}t = \theta$，则有
+\begin{align}
+R_\textnormal{ab}(\theta) = e^{[\hat{\mathbf{w}}_\textnormal{ab}]\theta}R_\textnormal{ab}(0) \label{eq:matrixdifeqsolutionab}
+\end{align}
+在式子(\ref{eq:matrixdifeqsolutionab})中，$R_\text{ab}$代表的是$\{\text{b}\}$在$\{\text{a}\}$中的表达，是一种状态，从这个角度理解为：$R_\text{ab}(0)$绕着$\hat{\mathbf{w}}_\textnormal{ab}$旋转$\theta$会得到$R_\text{ab}(\theta)$。如果我们在旋转操作的语境下来理解，为围绕着$\hat{\mathbf{w}}_\textnormal{ab}$旋转$\theta$相当于引起了$e^{[\hat{\mathbf{w}}_\textnormal{ab}]\theta}$这一操作，这个理解结合式子(\ref{eq:3daxisrotation})即有
+\begin{align}
+\text{Rot}(\hat{\mathbf{w}}, \theta) = R(\hat{\mathbf{w}}, \theta) = e^{[\hat{\mathbf{w}}]\theta} \label{eq:rotationexponential}
+\end{align}
+那么式子(\ref{eq:rotationexponential})就将轴角表示法与三维旋转矩阵这两个概念联系了起来，意义重大。不过，式子(\ref{eq:rotationexponential})涉及到无穷数级，计算起来不是很方便，因此我们试图化简。考虑到$ \mathbf{a}\times(\mathbf{a}\times(\mathbf{a}\times \mathbf{b})) =  -\mathbf{b}$，即$[\hat{\mathbf{w}}]^3 = -[\hat{\mathbf{w}}]$
+因此
+\begin{align}
+e^{[\hat{\mathbf{w}}]\theta} &= I + [\hat{\mathbf{w}}]\theta+[\hat{\mathbf{w}}]^2\frac{\theta^2}{2!} + [\hat{\mathbf{w}}]^3\frac{\theta^3}{3!} + \cdots \nonumber \\
+&=I + (\theta-\frac{\theta^3}{3!} + \frac{\theta^5}{5!}-\cdots)[\hat{\mathbf{w}}] + (\frac{\theta^2}{2!} - \frac{\theta^4}{4!} + \frac{\theta^6}{6!} -\cdots)[\hat{\mathbf{w}}]^2 \label{eq:simplifyexponential}
+\end{align}
+这里的$[\mathbf{w}]$和$[\mathbf{w}]^2$的系数是不是有点眼熟？没错，他们就是$\sin\theta$和$\cos\theta$的泰勒展开，即
+\begin{align}
+\sin\theta &= \theta - \frac{\theta^3}{3!} + \frac{\theta^5}{5!} - \frac{\theta^7}{7!} + \cdots \nonumber\\
+\cos\theta &= 1 - \frac{\theta^2}{2!} + \frac{\theta^4}{4!} -\frac{\theta^6}{6!} + \cdots \nonumber\\
+\label{eq:sincostaylor}
+\end{align}
+把式子(\ref{eq:sincostaylor})代入式子(\ref{eq:simplifyexponential})，并定义$\hat{\mathbf{w}} = [w_1\;w_2\;w_3]^T$，记$s_\theta = \sin{\theta}$，$c_\theta = \cos{\theta}$，则有
+\begin{align}
+e^{[\hat{\mathbf{w}}]\theta} &= I + [\hat{\mathbf{w}}]\sin\theta + [\hat{\mathbf{w}}]^2(1-\cos\theta)  \nonumber \\
+&= \begin{bmatrix}
+c_\theta +w^2_1(1-c_\theta) & w_1w_2(1-c_\theta)-w_3s_\theta & w_1w_3(1-c_\theta)+w_2s_\theta\\
+w_1w_2(1-c_\theta)+w_3s_\theta&c_\theta +w^2_2(1-c_\theta)&w_2w_3(1-c_\theta)-w_1s_\theta
+\\w_1w_3(1-c_\theta)-w_2s_\theta & w_2w_3(1-c_\theta)+w_1s_\theta &c_\theta +w^3_1(1-c_\theta)
+\end{bmatrix} \label{eq:calculateexponential}
+\end{align}
+式子(\ref{eq:calculateexponential})就是计算轴角表示的方法。
+
+我们知道了通过轴角计算旋转矩阵的方法，那么有没有通过旋转矩阵计算轴角的方法？答案是肯定的。在本文证明欧拉旋转定理的过程当中，通过解析几何的手段，轴角会在过程当中自然浮现的。还有一种方法即是通过式子(\ref{eq:calculateexponential})来解关于$s_\theta$、$c_\theta$、$w_1$、$w_2$、$w_3$的方程，从而得到$\theta$和$\hat{\mathbf{w}}$。由于通过旋转矩阵计算轴角的运算在机器人当中不太常见，因此在此不详细讨论。有兴趣可以自行当习题做。
+
+\subsubsection{旋转矩阵与矩阵指数的性质}
+
+\begin{mytheorem}
+对于任意参照系$\{\textnormal{a}\}$和机体参照系$\{\textnormal{b}\}$，当$\{\textnormal{b}\}$相对$\{\textnormal{a}\}$绕$\hat{\mathbf{w}}_\textnormal{ab}^{\textnormal{a}}$进行旋转，旋转角度为$\theta$，则
+$R_\text{ab}(\theta) = e^{[\hat{\mathbf{w}}_\textnormal{ab}^{\textnormal{a}}]\theta} R_\textnormal{ab}(0) $
+\end{mytheorem}
+
+\begin{mytheorem}
+$e^{[\hat{\mathbf{w}}_\textnormal{ab}^{\textnormal{a}}]\theta} R_\textnormal{ab}(0) = R_\textnormal{ab}(0) e^{[\hat{\mathbf{w}}_\textnormal{ab}^{\textnormal{b}}]\theta}$
+\end{mytheorem}
+
+\begin{mytheorem}
+对于绕$\hat{\mathbf{w}}$旋转$\theta$这一旋转操作，有
+$\textnormal{Rot}(\hat{\mathbf{w}}, \theta) = e^{[\hat{\mathbf{w}}]\theta}$
+\end{mytheorem}
+
+\begin{mytheorem}
+对于$\hat{\mathbf{w}} = [w_1\;w_2\;w_3]^T$，并记$s_\theta = \sin{\theta}$，$c_\theta = \cos{\theta}$，则有
+\begin{align*}
+e^{[\hat{\mathbf{w}}]\theta}&=I + [\hat{\mathbf{w}}]\sin\theta + [\hat{\mathbf{w}}]^2(1-\cos\theta)  \\
+&= \begin{bmatrix}
+c_\theta +w^2_1(1-c_\theta) & w_1w_2(1-c_\theta)-w_3s_\theta & w_1w_3(1-c_\theta)+w_2s_\theta\\
+w_1w_2(1-c_\theta)+w_3s_\theta&c_\theta +w^2_2(1-c_\theta)&w_2w_3(1-c_\theta)-w_1s_\theta
+\\w_1w_3(1-c_\theta)-w_2s_\theta & w_2w_3(1-c_\theta)+w_1s_\theta &c_\theta +w^3_1(1-c_\theta)
+\end{bmatrix}
+\end{align*}
+\end{mytheorem}
+
+\begin{mytheorem}
+$e^{[\hat{\mathbf{w}}](\theta_1 + \theta_2)} =e^{[\hat{\mathbf{w}}]\theta_1 }e^{[\hat{\mathbf{w}}]\theta_2 }$
+\end{mytheorem}
+
+\begin{mytheorem}
+$\textnormal{Rot}(\hat{\mathbf{w}}, \theta_1+\theta_2)=  \textnormal{Rot}(\hat{\mathbf{w}}, \theta_1)\textnormal{Rot}(\hat{\mathbf{w}}, \theta_2)$
+\end{mytheorem}
+\subsection{李群和李代数}
+
+
+
+\end{document}

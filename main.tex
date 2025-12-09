@@ -1,0 +1,108 @@
+\RequirePackage[2020-02-02]{latexrelease}
+\documentclass[12pt, article]{ctexart}
+\usepackage[subpreambles=true]{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage[bottom]{footmisc}
+\usepackage{enumitem}   
+%\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{textgreek}
+%\usepackage{esvect}
+%\usepackage{esdiff}
+\usepackage{subcaption}
+\usepackage{amssymb}
+\usepackage{amsthm} 
+%\usepackage{accents}
+%\usepackage{multicol}
+\usepackage{mathrsfs}
+%\usepackage{courier}
+%\usepackage{xcolor}
+\usepackage{float}
+%\usepackage{esint}
+%\usepackage{array}
+\usepackage{comment}
+%\usepackage{commath}
+%\usepackage[boxruled]{algorithm2e}
+\usepackage{textcomp}
+\usepackage{tikz}
+%\usepackage{ctable}
+%\usepackage[thinlines]{easytable}
+\usepackage{fancyhdr}	
+\usepackage[left=20mm,right=20mm, top=30mm, bottom=30mm]{geometry}
+%\usepackage[printwatermark]{xwatermark}
+
+
+\usepackage{import}
+
+\long\def\/*#1*/{}
+\pagestyle{fancy}
+
+
+%\setCJKmainfont[Scale=1.2]{SimSun}
+\setlength{\columnsep}{1cm}
+
+\lhead{WUJI TECH 版权所有}
+\rhead{2022年1月}
+\lfoot{https://wuji.tech}
+\rfoot{}
+
+% \date{\today} date coulde be today 
+% \date{25.12.00} or be a certain date
+% \date{ } or there is no date 
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+
+\newcommand\centerofmass{%
+    \tikz[radius=0.4em] {%
+        \fill (0,0) -- ++(0.4em,0) arc [start angle=0,end angle=90] -- ++(0,-0.8em) arc [start angle=270, end angle=180];%
+        \draw (0,0) circle;%
+    }%
+}
+
+
+%\theoremstyle{definition}
+
+\newtheorem{mytheorem}{性质}
+\numberwithin{mytheorem}{section}
+
+
+\newtheorem{mydefinition}{定义}
+\numberwithin{mydefinition}{section}
+
+\title{学习Robotics的讲义}
+% \newwatermark[allpages,color=red!20,angle=55,scale=2,xpos=-5,ypos=0]{舞肌科技}
+\begin{document}
+
+\import{sections/}{cover}
+
+
+\newpage
+\tableofcontents
+
+
+\newpage
+\import{sections/}{foreword}
+
+
+\newpage
+
+\import{sections/}{intro}
+
+\newpage
+
+\import{sections/}{rotation}
+
+\newpage
+
+\import{sections/}{screw}
+
+\newpage
+
+\import{sections/}{dynamics}
+
+\newpage
+
+\import{sections/}{multibody}
+
+\end{document}

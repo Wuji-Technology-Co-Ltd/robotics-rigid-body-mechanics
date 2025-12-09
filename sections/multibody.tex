@@ -1,0 +1,177 @@
+\documentclass[12pt, a4paper, article, UTF8]{ctexart}
+\usepackage[subpreambles=true]{standalone}
+\usepackage{import}
+\begin{document}
+\section{多刚体的动力学}
+\subsection{章节概述}
+\subsection{机器人关节的类型}
+在机器人当中，多刚体就是由多个单独的刚体共同组成的系统。其中，一个刚体与另一个刚体通过某种方式连接。这种连接处我们称为关节（joint，又称接点）。最基本的关节有三种，第一种为绕固定螺旋轴的发生旋转的旋转关节（revolute joint）；第二种为沿着固定直线方向发生平移的直线关节（prismatic joint，又称棱柱接点）；第三种为比如滚珠丝杠这样的螺旋关节（helical joint，又称螺旋接点），即绕固定螺旋轴同时发生平移和旋转。
+
+还有一些复杂一些的关节，一种是具有多个自由度的，比如万向关节（universal joint，又称万向节）；还有仅具有一个自由度但不能在螺旋理论框架下简单描述的，比如曲线轨道。
+
+在机器人当中，最常见以及主要的执行器的是旋转关节。其次是直线关节和螺旋关节。具有多个自由度的关节可以被拆分为若干个具有一个自由度的系统进而继续在螺旋理论的框架下分析，而具有复杂运动的关节很少出现在机器人本体中，固不作为基本情况讨论。
+
+本文会主要以旋转关节为基础讨论，因为这是机器人当中最常见的一种关节。由于螺旋理论的一般性，所以得到的结论可以直接适用螺旋关节和直线关节，但不会为这些情况进行特别说明。我们把可以主动产生运动和力螺旋的关节叫做执行器或者关节执行器。
+
+\subsection{二关节机器人的一个例子}
+
+\subsubsection{小节概述}
+\subsubsection{二关节机器人}
+在搞清楚复杂的机构之前，我们先来看一个简单的例子。
+
+\begin{figure}[H]
+\centering
+  \includegraphics[scale=0.4]{images/hinge_example.png}
+  \caption{Example of 2 旋转关节s}
+  \label{fig:hinge_example}
+\end{figure}
+
+如图(\ref{fig:hinge_example})所示的一个简单的2自由度系统，假设系统处于无重力环境，B支点连接base和连接件1，A支点连接连接件1和连接件2，支点A和支点B均为旋转关节，支点A和支点B均为电机，记作电机 A和电机 B，且电机 B的转子与连接件1为一体，电机B的定子和电机 A的转子与连接件2为一体。在系统的末端受到一个xy平面的力，称为$\vec{2}_\text{tip}$。因此有$\mathbf{f}^{\, 2(3)}_{\vec{2}_{\text{tip}}}=[f_x\;f_y\;0]^T$，系统保持静止。因此电机 A和电机 B必然产生力矩去抵消这个力的影响。那么根据朴素的直觉和杠杆原理我们也应该知道，电机A产生的力矩为$\textbf{\texttau}_{\text{A}}^{\text{A}} = [0\;0\; -rf_y]^T$， 电机B产生的力矩为$\textbf{\texttau}_{\text{B}}^{\text{B}} = [0\;0\; -2rf_y]^T$。
+
+我们对连接件2的作受力分析。基于之前我们对质心的讨论，我们把连接件2的参照系建立在质心上。取向优先与惯量主轴对齐，或者是沿着连接件2的几何轴线，在这里我们直接取与固定参照系$\{\text{s}\}$相同得取向。由于连接件2处于静止状态，所以不难得到连接件2受到的合外力螺旋（net wrench）：
+\begin{align}
+\mathbf{f}_{\text{s}2}^{\, 2} = G_2 \dot{\mathbf{u}}^{2}_{\text{s}2} - [\text{ad}_{\mathbf{u}^{2}_{\text{s}2}}]^T G_2\mathbf{u}^{2}_{\text{s}2} = \mathbf{0}
+\end{align}
+对连接件2作受力分析，连接件2受到一个来自由电机A的定子作用于转子的力螺旋，记作$\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}$，和连接件2末端的力$\vec{2}_\text{tip}$导致的力螺旋，记作$\mathbf{f}^{\, 2}_{\vec{2}_{\text{tip}}}$。因为连接件就受到两个力螺旋，电机A的力螺旋和$\vec{2}_\text{tip}$，因此
+\begin{align}
+\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2} &= \mathbf{f}_{\text{s}2}^{\, 2} - \mathbf{f}^{\, 2}_{\vec{2}_{\text{tip}}} =  G_2 \dot{\mathbf{u}}^{2}_{\text{s}2} - [\text{ad}_{\mathbf{u}^{2}_{\text{s}2}}]^T G_2\mathbf{u}^{2}_{\text{s}2} - \mathbf{f}^{\, 2}_{\vec{2}_{\text{tip}}} \nonumber \\
+&= - \mathbf{f}^{\, 2}_{\vec{2}_{\text{tip}}} \label{eq:电机Aforce}
+\end{align}
+$\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}$从来源上来说应当包含两部分，一部分为电机 A产生力矩去抵消$\mathbf{f}^{\, 2}_{\vec{2}_{\text{tip}}}$产生导致连接件2的旋转的趋势（$f_y$导致的旋转趋势），另一部分为被旋转关节的非运动部分的刚性所承受掉的力（$f_x$导致的）。在电机A的语境的下，就是被电机A中连接转子和定子的轴承所承受的径向载荷。
+
+分析完了连接件2，分析连接件1。我们应当意识到，$\vec{2}_\text{tip}$对连接件1的效果是通过支点A从远处传递到连接件1的，因为如果支点A不存在，即连接件2和连接件1不连接，那么$\vec{2}_\text{tip}$无论如何也传递不到连接件1。实际上，我们无需关注$\vec{2}_\text{tip}$是如何传递到连接件1上的。支点A这个joint本身就是传递力螺旋的，这就是简单的作用力与反作用力的关系。即：如果定子作用于转子有一个$\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}$，那么转子对定子就有$-\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}$。而连接件1所受到的全部来自连接件2的力螺旋就是通过转子到定子传递过来的反作用力螺旋。
+
+正如前文所说，这个$\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}$是定子作用于转子的力螺旋，它既可以包括定子与转子之间的电磁力（即z轴的力矩），也可以包括定子与转子之间通过轴承传递的载荷，包括$f_z$导致的轴向载荷（axial load）、$f_x$导致的径向载荷（radial load）、$\tau_x$和$\tau_y$导致的力矩载荷（moment load）。在这个例子当中，轴承只传递只有$f_x$导致的径向载荷。在别的例子当中，可能三种载荷都有。
+
+因此对连接件1作受力分析则有连接件1受到来自电机B的力螺旋和来自连接件2的力螺旋，连接件2的力螺旋就是电机A对连接件2通过定子-转子传递的力螺旋的反作用力螺旋，与$\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}$的作用完全相反。把连接件1受到来自电机A的力记作$\vec{1}_\text{A}$，那么有
+\begin{align}
+\mathbf{f}_{\vec{1}_{\text{A}}}^{\,1} =[\text{Ad}_{T_{21}}]^T (-\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}) = -[\text{Ad}_{T_{21}}]^T \mathbf{f}_{\vec{2}_{\text{A}}}^{\,2}
+\end{align}
+
+\begin{align}
+\mathbf{f}_{\text{s}1}^{\,1} =  {G}_1 \dot{\mathbf{u}}_{\text{s}1}^{1} - [\text{ad}_{\mathbf{u}_{\text{s}1}^{1}}]^T G_1\mathbf{u}_{\text{s}1}^{1} = \mathbf{f}_{\vec{1}_{\text{A}}}^{\,1} + \mathbf{f}_{\vec{1}_{\text{B}}}^{\,1} =\mathbf{0}
+\end{align}
+因此有
+\begin{align}
+\mathbf{f}_{\vec{1}_{\text{B}}}^{\,1} &= {G}_1 \dot{\mathbf{u}}_{\text{s}1}^{1} - [\text{ad}_{\mathbf{u}_{\text{s}1}^{1}}]^T G_1\mathbf{u}_{\text{s}1}^{1} - \mathbf{f}_{\vec{1}_{\text{A}}}^{\,1} \nonumber \\
+&= [\text{Ad}_{T_{21}}]^T \mathbf{f}_{\vec{2}_{\text{A}}}^{\,2} = [\text{Ad}_{T_{21}}]^T( - \mathbf{f}^{\, 2}_{\vec{2}_{\text{tip}}}) =- \mathbf{f}^{\, 1}_{\vec{2}_{\text{tip}}}  \label{eq:电机Bforce}
+\end{align}
+可见式子(\ref{eq:电机Aforce})和式子(\ref{eq:电机Bforce})与我们朴素的分析是一致的。
+
+
+
+
+
+
+从这个例子当中我们可以归纳出两个更具有一般性的的结论：第一：对于一个复杂机构中的一个刚体连接件，记作b，连接件b上包含有$n$个执行器的定子，记作S1、S2、...，以及$m$个执行器的动子（mover，在旋转电机中为转子），记作M1、M2、...，并且连接件受到所有来自外界（即机器人以外的）的力为$\vec{\text{b}}_\text{E}$，那么相对于固定参照系$\{\text{s}\}$（或者任何惯性参照系）[TODO图]，对连接件b进行受力分析，有
+\begin{align}
+\mathbf{f}_{\text{sb}}^{\,\text{b}} &= \mathbf{f}^{\,\text{b}}_{\vec{\text{b}}_{\text{E}}} +  \sum^{n}_{i=1} \mathbf{f}^{\,\text{b}}_{\vec{\text{b}}_{\text{S}i}} + \sum^{m}_{i=1} \mathbf{f}^{\,\text{b}}_{\vec{\text{b}}_{\text{M}i}}   = G_{\text{b}} \dot{\mathbf{u}}_{\text{sb}}^{\text{b}} - [\text{ad}_{\mathbf{u}_{\text{sb}}^{\text{b}}}] G_{\text{b}}\mathbf{u}_{\text{sb}}^{\text{b}} 
+\label{eq:连接件dynamics}
+\end{align}
+
+第二：对于一个执行器，记作A，连接两个连接件，其中定子与连接件1固定，动子与连接件2固定，那么有作用力反作用力原理，即通过A传递到连接件1的作用力等于负的通过A传递到连接件2的作用力，写成式子为
+\begin{align}
+\mathbf{f}_{\vec{1}_{\text{A}}}^{\,1} = -\mathbf{f}_{\vec{2}_{\text{A}}}^{\,1} =- [\text{ad}_{T_{21}}]^T \mathbf{f}_{\vec{2}_{\text{A}}}^{\,2} \\
+\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2} = -\mathbf{f}_{\vec{1}_{\text{A}}}^{\,2} =- [\text{ad}_{T_{12}}]^T \mathbf{f}_{\vec{1}_{\text{A}}}^{\,1}
+\end{align}
+
+式子(\ref{eq:连接件dynamics})还有一些悬而未决的细节。比如说电机这样的执行器，我们在实际使用的时候观测其力矩得到的是一个标量，而不是一个力螺旋，那么这个标量和力螺旋之间是如何转化的？换句话说，我们要回答两个问题：一、知道通过关节执行器传递的力螺旋 $\mathbf{f}$，如何知道其执行器的力矩？二、知道执行器的力矩，如何知道其对刚体的力螺旋？
+
+对于第一个问题，一种直接的方法就是把参照系建在关节上，此时不难发现，电机的力矩就是力螺旋在电机旋转方向上的投影，因为电机在旋转方向除了电磁作用力以外是没有其他扭矩的来源的。如果我们参照系建立在关节执行器上，用螺旋轴来描述转子相对定子旋转的方向记作$\hat{\mathbf{u}}_\text{Am}^{\text{m}}$，在此参照系下，定子到转子到连接件传递的力螺旋记作$\mathbf{f}_\text{m}^{\,\text{m}}$，电机产生的力矩记作$\tau_\text{m}\in \mathbb{R}$
+\begin{align}
+\tau_\text{m} = (\mathbf{f}_\text{\text{m}}^{\,\text{m}})^T  \hat{\mathbf{u}}_\text{Am}^{\text{m}} = \begin{bmatrix}
+\textbf{\texttau}_\text{m}^{\text{m}} \\ \mathbf{f}_\text{m}^{\,\text{m}(3)} 
+\end{bmatrix}^T \begin{bmatrix}
+\hat{\mathbf{w}}^{\text{m}}_{\text{m}} \\ \vec{0}
+\end{bmatrix}
+ = \hat{\mathbf{w}}_\text{Am}^{\text{m}} \cdot \textbf{\texttau}_\text{m}^{\text{m}} \label{eq:motortorque}
+\end{align}
+当我们换一个任意的参照系时，有
+\begin{align}
+([\text{Ad}_{T^{-1}}]^T \mathbf{f}_\text{\text{m}}^{\,\text{m}})^T  ([\text{Ad}_{T}] \hat{\mathbf{u}}_\text{Am}^{\text{m}}) = (\mathbf{f}_\text{m})^T  [\text{Ad}_{T^{-1}}] [\text{Ad}_{T}] \hat{\mathbf{u}}_\text{Am}^{\text{m}} = (\mathbf{f}_\text{m}^{\,\text{m}})^T  \hat{\mathbf{u}}_\text{Am}^{\text{m}} \label{eq:motortorquechangeframe}
+\end{align}
+因此式子(\ref{eq:motortorque})在任何参照系下都成立。这意味着，对于旋转关节执行器A，连接两个连接件，其中定子与连接件1固定，动子与连接件2固定，有执行器输出力矩为
+\begin{align}
+\tau_\text{A} = (\mathbf{f}_{\vec{2}_{\text{A}}}^{\,2})^T \hat{\mathbf{u}}_{12}^{2} \label{eq:calculateactuatorwrench}
+\end{align}
+需要注意的是，式子(\ref{eq:calculateactuatorwrench})是基于旋转关节得到的。实际上，对于直线关节和螺旋关节，式子(\ref{eq:calculateactuatorwrench})同样适用。对此具体证明过程在此不展开。
+
+我们也不难发现，利用式子(\ref{eq:calculateactuatorwrench})的形式还可以计算电机轴承的轴向载荷、径向载荷和力矩载荷。
+
+对于第二个问题，其实我们从第一个问题当中可以察觉到力螺旋的信息是比电机 力矩的信息要丰富的，如果仅知道电机 力矩而不知道其他的状态的话，是无法知道电机传递的力螺旋到底有多少的。
+
+\subsubsection{关于一个关节以及关于一个连接件的性质}
+\begin{mytheorem}
+对于一个复杂机构中的一个刚体连接件，记作$\textnormal{b}$，连接件$\textnormal{b}$上包含有$n$个执行器的定子，记作$\textnormal{S1}$、$\textnormal{S2}$、...，以及$m$个执行器的动子，记作$\textnormal{M1}$、$\textnormal{M2}$、...，并且连接件受到所有来自外界的力为$\vec{\textnormal{b}}_\textnormal{E}$，那么相对于任意的惯性参照系$\{\textnormal{a}\}$，有
+\begin{align*} 	
+\mathbf{f}_{\textnormal{ab}}^{\,\textnormal{b}} &= \mathbf{f}^{\,\textnormal{b}}_{\vec{\textnormal{b}}_{\textnormal{E}}} +  \sum^{n}_{i=1} \mathbf{f}^{\,\textnormal{b}}_{\vec{\textnormal{b}}_{\textnormal{S}i}} + \sum^{m}_{i=1} \mathbf{f}^{\,\textnormal{b}}_{\vec{\textnormal{b}}_{\textnormal{M}i}}   = G_{\textnormal{b}} \dot{\mathbf{u}}_{\textnormal{ab}}^{\textnormal{b}} - [\textnormal{ad}_{\mathbf{u}_{\textnormal{ab}}^{\textnormal{b}}}] G_{\textnormal{b}}\mathbf{u}_{\textnormal{ab}}^{\textnormal{b}} 
+\end{align*}
+\label{th:linkdynamics}
+\end{mytheorem}
+
+\begin{mytheorem}
+对于一个执行器，记作\textnormal{A}，连接两个连接件，其中定子与连接件1固定，动子与连接件2固定，那么通过\textnormal{A}传递到连接件1的作用力等于负的通过\textnormal{A}传递到连接件2的作用力，即
+\begin{align*}
+\mathbf{f}_{\vec{1}_{\textnormal{A}}}^{\,1} = -\mathbf{f}_{\vec{2}_{\textnormal{A}}}^{\,1} =- [\textnormal{ad}_{T_{21}}]^T \mathbf{f}_{\vec{2}_{\textnormal{A}}}^{\,2} \\
+\mathbf{f}_{\vec{2}_{\textnormal{A}}}^{\,2} = -\mathbf{f}_{\vec{1}_{\textnormal{A}}}^{\,2} =- [\textnormal{ad}_{T_{12}}]^T \mathbf{f}_{\vec{1}_{\textnormal{A}}}^{\,1}
+\end{align*}
+\end{mytheorem}
+
+
+\begin{mytheorem}
+对于关节执行器A，连接两个连接件，其中定子与连接件1固定，动子与连接件2固定，有任意参照系$\{\textnormal{a}\}$，有执行器输出力矩为
+\begin{align*}
+\tau_\textnormal{A} = (\mathbf{f}_{\vec{2}_{\textnormal{A}}}^{\,\textnormal{a}})^T \hat{\mathbf{u}}_{12}^{\textnormal{a}}
+\end{align*}
+\end{mytheorem}
+
+
+
+\subsection{具有固定基座的开环直链机器人的动力学}
+我们在上一小节介绍了一个关节和一个连接件的动力学分析。那么显然，我们将单个部件的动力学应用在机器人的每个部件上就会得到机器人的整个动力学。
+
+我们首先研究一个最简单的例子，即具有固定基座的开环直链机器人。固定基座指的是机器人的基座与固定参照系$\{\text{s}\}$完全固定而无相对运动。开环是指机器人执行器和连接件形成的链路上没有闭合的环。直链是指机器人执行器和连接件形成的链路上没有分支结构。结合性质\ref{th:linkdynamics}来说，就是对于基座连接件来说：$n=1$，$m=0$；对于末端（即最远离基座的连接件）来说：$n=0$，$m=1$；对于其他连接件来说：$n=1$，$m=1$。
+
+由于机器人系统具有多个连接件和执行器，所以我们在讨论其动力学之前需要对他们进行命名和规范。
+
+我们记基座连接件为L0，从最接近L0到最远离L0的连接件分别记作L1，L2直至L$n$。L0与L1之间传递力螺旋的关节执行器记作A1，以此类推有L$i-1$与L$i$之间的关节执行器为A$i$，直至A$n$。对于执行器A$i$，我们默认其定子安装在L$i-1$上，动子安装在L$i$上。对于连接件L$i$，我们在L$i$的重心建立参照系，记作$\{\text{L}i\}$，参照系的取向优先选择与惯性主轴对齐，或者其他方便的轴。
+
+如果我们在一个连接件参照系中表达另一个连接件参照系，即比如在$\{\text{L}i\}$中表达$\{\text{L}j\}$，有$T_{\text{L}i\text{L}j}$。对于通过执行器连接的两个连接件$\{\text{L}i-1\}$和$\{\text{L}i\}$，$T_{\text{L}i\text{L}-1}$完全由执行器所旋转过的角度$\theta_i$所定义（旋转关节）。那么我们其实可以有$T_{\text{L}i\text{L}-1}(\theta_i)$，但由于性质\ref{th:transformationexponential}和性质\ref{th:transformationexponentialbodyframe}，我们需要定义一个基准方位$T_{\text{L}i\text{L}-1}(0)$，我们把$T_{\text{L}i\text{L}-1}(0)$所代表的方位称为原方位（home configuration）。因为执行器A$i$产生的运动是L$i$相对于L$i-1$，因此对应的螺旋轴为$\hat{\mathbf{u}}_{\text{L}i-1\text{L}i}$，表达在$\{\text{L}i\}$为$\hat{\mathbf{u}}_{\text{L}i-1\text{L}i}^{\text{L}i}$，那么根据性质\ref{th:transformationexponentialbodyframe}，[TODO图]有
+\begin{align}
+T_{\text{L}i\text{L}i-1}(\theta_i) =e^{-[\hat{\mathbf{u}}_{\text{L}i-1\text{L}i}^{\text{L}i}] \theta_i} T_{\text{L}i\text{L}i-1}(0)  \label{eq:transformlili-1}
+\end{align}
+
+从式子(\ref{eq:transformlili-1})不难发现，对于所有$i$，我们规定了原方位$T_{\text{L}i\text{L}-1}(0)$以及执行器的角度$\theta_i$，就可以知道所有任意连接件L$j$相对于任意连接件L$i$的方位了。
+
+我们知道了连接件的方位，那必然要研究连接件的旋动。根据性质\ref{th:relativityoftwist}，有
+\begin{align}
+\mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} = \mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i} + \mathbf{u}_{\text{L}i-1\text{L}i}^{\text{L}i} \label{eq:twisti-1totwisti}
+\end{align}
+观察式子(\ref{eq:twisti-1totwisti})，L$i$相对于L$i-1$的旋动完全就是由执行器A$i$的运动导致的，因此式子(\ref{eq:twisti-1totwisti})可以被写为
+\begin{align}
+\mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} = [\text{Ad}_{T_{\text{L}i\text{L}i-1}}] \mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i-1} + \hat{\mathbf{u}}_{\text{L}i-1\text{L}i}^{\text{L}i}\dot{\theta}_{i} \label{eq:twistiteration}
+\end{align}
+对式子(\ref{eq:twistiteration})进行求导，就可获得旋动关于时间的变化$\dot{\mathbf{u}}_{\text{L}0\text{L}i}^{\text{L}i}$，即
+\begin{align}
+\dot{\mathbf{u}}_{\text{L}0\text{L}i}^{\text{L}i} = (\frac{d}{dt}[\text{Ad}_{T_{\text{L}i\text{L}i-1}}])\mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i-1} + [\text{Ad}_{T_{\text{L}i\text{L}i-1}}]\dot{\mathbf{u}}_{\text{L}0\text{L}i-1}^{\text{L}i-1} + \hat{\mathbf{u}}_{\text{L}i-1\text{L}i}^{\text{L}i}\ddot{\theta}_{i} + \dot{\hat{\mathbf{u}}}_{\text{L}i-1\text{L}i}^{\text{L}i}\dot{\theta}_{i} \label{eq:dulidt}
+\end{align}
+观察式子(\ref{eq:dulidt})，显然，执行器A$i$的对应的螺旋轴是不会改变的，因此$\dot{\hat{\mathbf{u}}}_{\text{L}i-1\text{L}i}^{\text{L}i} = \mathbf{0}$。并且注意到
+\begin{align}
+(\frac{d}{dt}[\text{Ad}_{T_{\text{L}i\text{L}i-1}}])\mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i-1} &= [\text{ad}_{\mathbf{u}_{\text{L}i\text{L}i-1}^{\text{L}i}}]  [\text{Ad}_{T_{\text{L}i\text{L}i-1}}] \mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i-1} \quad \text{ {\footnotesize 性质\ref{th:adjointdiff1} }} \nonumber \\
+&= [\text{ad}_{\mathbf{u}_{\text{L}i\text{L}i-1}^{\text{L}i}}] \mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i} \nonumber = [\text{ad}_{\mathbf{u}_{\text{L}i\text{L}i-1}^{\text{L}i}}] (\mathbf{u}_{\text{L}0\text{L}i-1}^{\text{L}i} - \mathbf{u}_{\text{L}i\text{L}i-1}^{\text{L}i}) \quad \text{ {\footnotesize 性质\ref{th:adjointtwistzero} }} \nonumber \\
+&= [\text{ad}_{\mathbf{u}_{\text{L}i\text{L}i-1}^{\text{L}i}}] \mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} \quad \text{ {\footnotesize 性质\ref{th:reversetwist}和式子(\ref{eq:twisti-1totwisti})}} \nonumber \\
+&= -[\text{ad}_{\mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} }] \mathbf{u}_{\text{L}i\text{L}i-1}^{\text{L}i} \quad \text{ {\footnotesize 性质\ref{th:adjointab}}}  \nonumber \\
+&= [\text{ad}_{\mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} }] \mathbf{u}_{\text{L}i-1\text{L}i}^{\text{L}i} \quad \text{ {\footnotesize 性质\ref{th:reversetwist}}}  \label{eq:twistdottermproof}
+\end{align}
+因此，由式子(\ref{eq:twistdottermproof})可得
+\begin{align}
+\dot{\mathbf{u}}_{\text{L}0\text{L}i}^{\text{L}i} = [\text{ad}_{\mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} }] (\hat{\mathbf{u}}_{\text{L}i-1\text{L}i}^{\text{L}i}\dot{\theta_i}) + [\text{Ad}_{T_{\text{L}i\text{L}i-1}}]\dot{\mathbf{u}}_{\text{L}0\text{L}i-1}^{\text{L}i-1} + \hat{\mathbf{u}}_{\text{L}i-1\text{L}i}^{\text{L}i}\ddot{\theta}_{i} \label{eq:twistdotiteration}
+\end{align}
+式子(\ref{eq:twistdotiteration})正是通过L$i-1$的各个物理量计算L$i$的旋动的变化量。当我们知道了L$i$的旋动以及旋动变化量，就可以写出关于L$i$的动力学方程，即
+\begin{align}
+\mathbf{f}_{\text{L}0\text{L}i}^{\,\text{L}i} = \mathbf{f}_{\vec{\text{L}i}_{\text{E}}}^{\,\text{L}i} +  \mathbf{f}_{\vec{\text{L}i}_{\text{g}}}^{\,\text{L}i} + \mathbf{f}^{\,\text{L}i}_{\vec{\text{L}i}_{\text{A}i}} + \mathbf{f}^{\,\text{L}i}_{\vec{\text{L}i}_{\text{A}i+1}} = G_{\text{L}i} \dot{\mathbf{u}}_{\text{L}0\text{L}i}^{\text{L}i} - [\text{ad}_{\mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i}}]^T G_{\text{L}i} \mathbf{u}_{\text{L}0\text{L}i}^{\text{L}i} \label{eq:forceiteration}
+\end{align}
+在式子(\ref{eq:forceiteration})中，$\vec{\text{L}i}_{\text{g}}$代表L$i$收到的重力，$\vec{\text{L}i}_{\text{E}}$代表L$i$受到的除了来自执行器和重力以外的外界力。由于L$0$是静止的惯性参照系，因此$\mathbf{f}_{\text{L}0\text{L}i}^{\,\text{L}i}$中不含有惯性力，因此$ \mathbf{f}_{\vec{\text{L}i}_{\text{E}}}^{\,\text{L}i}$完全来自于作用于L$i$的实质力的力螺旋，比如外界直接对L$i$的接触作用力等。
+
+
+\end{document}

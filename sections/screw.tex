@@ -1,0 +1,488 @@
+\documentclass[12pt, a4paper, article, UTF8]{ctexart}
+\usepackage[subpreambles=true]{standalone}
+\usepackage{import}
+\begin{document}
+\section{空间中的运动和螺旋理论}
+\subsection{章节概述}
+在上一章，我们研究了二维和三维空间中的旋转。在研究旋转的过程中，我们假设两个参照系的原点重合。研究旋转帮助我们建立了许多宝贵的直觉。
+不过，真实物体在三维空间中的运动必然会涉及到两个参照系之间相对位置的变化那么在这一章中，我们就将介绍三维空间中物体的运动。
+
+%那么，要描述物体在空间中完整的状态，rigid body会发生位置上的移动，也就是translation，体现在frame上就是origin肯定不会再重合了，会发生相对运动。
+
+%首先，我们要明确一个概念，即我们所研究的物体都是rigid body。rigid body简单来说就是不会发生形变的理想刚体，force和torque在rigid body中的传递是瞬间、没有损失、不会造成形变的。实际上，force和torque是通过mechanical wave传递的，mechanical wave的速度就是传递速度；而且force和torque也会在传递的过程损失掉一部分，因为force或torque会造成材料的stress，而stress会造成strain，也就是形变，这也就是force或torque在对材料本身做功。
+
+%当然，对于force和torque不太大的物体和常见的结构金属材料，这些stress，strain，mechanical wave都可以忽略不计，至少在分析其kinematics、dynamics、（精度不高的）位置时等还暂时不需要考虑。因此我们至少目前可以安全地认为用rigid body的理想模型不会引起什么麻烦。
+
+\subsection{变换矩阵和参照系的方位}
+\subsubsection{小节概述}
+\subsubsection{变换矩阵和参照系的方位}
+如果我们要完整在一个参照系中表达另一个参照系在空间中的方位（configuration），我们不仅要表达参照系的方向，也要表达它的位置。以固定参照系$\{\text{s}\}$和机体参照系$\{\text{b}\}$为例。对于表达方向，我们在旋转中已经讨论过了，用的是表达$\{\text{b}\}$的三个坐标轴的方式并拼成$\mathbb{R}^{3\times3}$的矩阵的形式。对于表达$\{\text{b}\}$在$\{\text{s}\}$中的位置，最为显然的方式即为在$\{\text{s}\}$中表达$\{\text{b}\}$的原点。
+
+对于在$\{\text{s}\}$中表达$\{\text{b}\}$的形式，根据我们在旋转的经验，提出以下几点要求：1. 为矩阵的形式，这样就能通过矩阵乘法在不同的参照系下进行切换。2. 这个矩阵在表达自己时应该为单位矩阵$I$。3. 包含$\{\text{b}\}$的旋转矩阵和$\{\text{b}\}$的原点位置，因为这样我们就能沿用旋转矩阵乘法的诸多性质。
+
+一种构建符合这三个条件的矩阵为
+\begin{align}
+T = T_\text{sb}= \begin{bmatrix}
+r_{\text{b}x\rightarrow\text{s}x} & r_{\text{b}y\rightarrow\text{s}x} & r_{\text{b}z\rightarrow\text{s}x} & p_{\text{sb}x}\\
+r_{\text{b}x\rightarrow\text{s}y} & r_{\text{b}y\rightarrow\text{s}y} & r_{\text{b}z\rightarrow\text{s}y} & p_{\text{sb}y}\\
+r_{\text{b}x\rightarrow\text{s}z} & r_{\text{b}y\rightarrow\text{s}z} & r_{\text{b}z\rightarrow\text{s}z} & p_{\text{sb}z}\\
+0&0&0&1
+\end{bmatrix} = 
+\begin{bmatrix}
+R_\text{sb}& \mathbf{p}_\text{sb} \\
+0 & 1
+\end{bmatrix} \label{eq:transformationmatrix}
+\end{align}
+当然，还有一种符合这三个条件的构建方式是
+\begin{align}
+T = T_\text{sb} = \begin{bmatrix}
+ 1 & 0 \\
+\mathbf{p}_\text{sb} & R_\text{sb}
+\end{bmatrix} \label{eq:anothertransformationmatrix}
+\end{align}
+使用式子(\ref{eq:anothertransformationmatrix})还是式子(\ref{eq:transformationmatrix})完全是习惯和约定俗成。在这里，我们使用式子(\ref{eq:transformationmatrix})来表达参照系。我们把式子(\ref{eq:transformationmatrix})这个矩阵$T\in\mathbb{R}^{4\times 4}$称为变换矩阵（transformation matrix），而$T_\text{sb}$表达的是$\{\text{b}\}$在$\{\text{s}\}$中的方位。在$T_\text{sb}$中，$\mathbf{p}_\text{sb} = [p_{\text{sb}x}\; p_{\text{sb}y}\; p_{\text{sb}z}]^T$[TODO：修改标记规则]，为$\{\text{b}\}$的原点在$\{\text{s}\}$中的坐标，也可以视作$\{\text{b}\}$的原点相对于$\{\text{s}\}$的平移（translation）距离。为了避免每次都将矩阵写出来，我们可以记缩写$T_\text{sb}=T(R_\text{sb}, \mathbf{p}_\text{sb})$。
+
+对于空间中的某一个点Q，将点Q表达在$\{\text{b}\}$中记作$\mathbf{q}_\text{b}\in \mathbb{R}^3$，在$\{\text{s}\}$中记作$\mathbf{q}_\text{s}$，那么我们期待$\mathbf{q}_\text{s} = T_\text{sb}\mathbf{q}_\text{b}$，但我们会发现$T_\text{sb}\in\mathbb{R}^{4\times 4}$，而$\mathbf{q}_\text{b}\in\mathbb{R}^3$，因此为了使得乘法能顺利进行，我们令
+\begin{align}
+\mathbf{q}_\text{b}^{{}_{(4)}} = [\mathbf{q}_\text{b} \; 1]^T \in \mathbb{R}^4
+\end{align}
+因此有
+\begin{align}
+\mathbf{q}_\text{s}^{{}_{(4)}} = T_\text{sb}\mathbf{q}_\text{b}^{{}_{(4)}}  = \begin{bmatrix}
+R_\text{sb} \mathbf{q}_\text{b} + \mathbf{p}_\text{sb} \\
+1
+\end{bmatrix} \label{eq:transformpoint}
+\end{align}
+如图\ref{fig:transformpoint})，我们观察式子(\ref{eq:transformpoint})，$R_\text{sb}\mathbf{q}_\text{b}$相当于$\{\text{b}\}$和$\{\text{s}\}$重合时的情形，我们讨论三维旋转是一模一样的。那么式子(\ref{eq:transformpoint})这个空间变换可以可以这样理解：第一步：假想$\{\text{b}\}$与$\{\text{s}\}$完全重合，此时$\{\text{b}\}$无论是取向和原点位置都与$\{\text{s}\}$保持一致，并且$\mathbf{q}_\text{b}$对应的点Q跟随$\{\text{b}\}$一起。
+
+第二步，在第一步的基础上，旋转$\{\text{b}\}$至$\{\text{b}\}$原来的取向，在这个过程中点Q的坐标在$\{\text{s}\}$中表达即为$R_\text{sb}\mathbf{q}_\text{b}$。
+
+第三步。然后再把$\{\text{b}\}$平移到原先$\{\text{b}\}$的位置。即平移$+\mathbf{p}_\text{sb}$，得到$\mathbf{q}_\text{s}$。如此这样操作一来，点Q还是在原来的位置，而在这个变换的过程当中我们也获得了点Q在$\{\text{s}\}$的坐标$\mathbf{q}_\text{s} = R_\text{sb}\mathbf{q}_\text{b} +\mathbf{p}_\text{sb}$。
+
+从以上三步不难发现，这个过程不仅能够实现坐标变换；也可以描述空间中物体的运动后的结果，而这个运动本身就是被变换矩阵$T$所定义。
+
+由此可见，变换矩阵有三个意义：
+
+第一，在一个参照系表达另一个参照系的方位。简称在一个参照系中表达另一个参照系，比如将$\{\text{b}\}$表达在$\{\text{s}\}$中。
+
+第二，在一个参照系中，将物体在三维空间中相对于此参照系进行运动，其运动由变换矩阵$T=T(R,\mathbf{p})$来定义。具体为：先对物体进行$R$的旋转，再进行$\mathbf{p}$的平移。三维空间中的物体包括点、线、向量、平面、几何体等。比如某点在运动前记作$\mathbf{q}^{{}_{(4)}}$，运动后记作$\mathbf{q}^{{}_{(4)'}}$，则
+\begin{align}
+\mathbf{q}^{{}_{(4)'}} =T(R,\mathbf{p})\mathbf{q}^{{}_{(4)}} = \begin{bmatrix}
+R\mathbf{q}^{{}_{(4)}} + \mathbf{p}\\1
+\end{bmatrix}
+\end{align}
+
+第三，在不同的参照系中进行切换，即
+\begin{align}
+T_\text{ac} &= T_\text{ab}T_\text{bc} \\
+\mathbf{q}_\text{a}^{{}_{(4)}} &= T_\text{ab} \mathbf{q}_\text{b}^{{}_{(4)}}
+\end{align}
+
+\subsubsection{变换矩阵的性质}
+对于任意三维参照系$\{\text{a}\}$和$\{\text{b}\}$，在$\{\text{a}\}$中表达$\{\text{b}\}$记作$T_\text{ab}$，在$\{\text{b}\}$中表达$\{\text{a}\}$记作$T_\text{ba}$，对于$T_\text{ab}$，$T_\text{ba}$，以及其他三维变换矩阵$T$有如下定义和性质：
+\begin{mydefinition}
+定义三维变换矩阵$T_\textnormal{ab} = T(R_\textnormal{ab}, \mathbf{p}_\textnormal{ab})\in\mathbb{R}^{4\times 4}$（简称变换矩阵）为
+\begin{align*}
+T_\textnormal{ab}=\begin{bmatrix}
+R_\textnormal{ab} & \mathbf{p}_\textnormal{ab} \\
+0 & 1
+\end{bmatrix}
+\end{align*}
+其中$R_\textnormal{ab}$为在$\{\textnormal{a}\}$中表达$\{\textnormal{b}\}$的取向，$\mathbf{p}_\textnormal{ab}$为在$\{\textnormal{a}\}$中表达$\{\textnormal{b}\}$原点的坐标。
+\end{mydefinition}
+
+\begin{mydefinition}
+定义$\mathbf{q}^{{}_{(4)}} = [\mathbf{q} \; 1]^T\in \mathbb{R}^4$，其中$\mathbf{q}\in\mathbb{R}^3$
+\end{mydefinition}
+
+\begin{mytheorem}
+对于变换矩阵$A$、$B$，$AB$也是变换矩阵。
+\end{mytheorem}
+
+\begin{mytheorem}
+对于变换矩阵$A$、$B$、$B$，$(AB)C = A(BC)$
+\end{mytheorem}
+
+\begin{mytheorem}
+对于一个点或向量在空间中记作$\mathbf{p}\in\mathbb{R}^3$，在$\{\textnormal{a}\}$中表达记作$\mathbf{p}_\textnormal{a}$，在$\{\textnormal{b}\}$中表达记作$\mathbf{p}_\textnormal{b}$，则有
+\begin{align*}
+\mathbf{p}_\textnormal{b}^{{}_{(4)}} = T_\textnormal{ab}\mathbf{p}_\textnormal{a}^{{}_{(4)}}
+\end{align*}
+
+\end{mytheorem}
+
+\begin{mytheorem}
+对于任意参照系$\{\textnormal{c}\}$，有
+$T_\textnormal{ac} = T_\textnormal{ab}T_\textnormal{bc}$ [TODO证明]
+\end{mytheorem}
+
+\begin{mytheorem}
+$T_\textnormal{ba} =\begin{bmatrix}
+R_\textnormal{ab}^T & -R_\textnormal{ab}^T\mathbf{p}_\textnormal{ab} \\
+0 & 1
+\end{bmatrix}$  \label{eq:calculatetba}
+\end{mytheorem}
+
+\begin{mytheorem}
+$T_\textnormal{ba} =T_\textnormal{ab}^{-1}$ 
+\end{mytheorem}
+
+\begin{mytheorem}
+$T_\textnormal{ab}T_\textnormal{ba} = I$ 
+\end{mytheorem}
+
+\begin{mytheorem}
+对于变换矩阵$T_1$和$T_2$，一般情况下$T_1T_2 \neq T_2T_1$
+\end{mytheorem}
+
+\begin{mytheorem}
+对于$ \mathbf{x}\in\mathbb{R}^3$，$\mathbf{y}\in\mathbb{R}^3$，有$||T\mathbf{x}^{{}_{(4)}}-T\mathbf{y}^{{}_{(4)}}|| = ||\mathbf{x}^{{}_{(4)}}-\mathbf{y}^{{}_{(4)}}||$
+\end{mytheorem}
+
+
+\subsection{参照系的运动与螺旋运动}
+\subsubsection{小节概述}
+\subsubsection{参照系的速度}
+当一个参照系相对于另一个参照系发生运动时，比如$\{\text{b}\}$发生相对于$\{\text{s}\}$的运动时，$T_\text{sb}$在不断发生变化。那么
+\begin{align}
+\dot{T}_\text{sb} = \frac{d}{dt}T_\text{sb} = \begin{bmatrix}
+\dot{R}_\text{sb} & \dot{\mathbf{p}}_\text{sb}\\
+0 & 0
+\end{bmatrix}  \label{eq:dottsb}
+\end{align}
+在式子(\ref{eq:dottsb})中，$\dot{T}_\text{sb} = \dot{T}_\text{sb}^\text{s}$
+
+根据性质\ref{eq:calculatetba}，我们可以得到得到
+\begin{align}
+\dot{T}_\text{bs} = \begin{bmatrix}
+\dot{R}_\text{bs} & \dot{\mathbf{p}}_\text{bs}\\
+0 & 1
+\end{bmatrix} = 
+\begin{bmatrix}
+\dot{R}_\text{sb}^T & -(\dot{R}_\text{sb})^T \mathbf{p}_\text{sb} - R_\text{sb}^T \dot{\mathbf{p}}_\text{sb} \\
+0 & 1
+\end{bmatrix} \label{eq:dottbs}
+\end{align}
+在式子(\ref{eq:dottbs})中，$\dot{T}_\text{bs} = \dot{T}_\text{bs}^\text{b}$。观察式子(\ref{eq:dottbs})中的$\dot{\mathbf{p}}_\text{bs}$，不难发现当$\{\text{b}\}$相对于$\{\text{s}\}$运动时，$\{\text{s}\}$的坐标表达在$\{\text{b}\}$中既收到角速度$\dot{R}_\text{sb}$的影响，也受到原点本身速度$\dot{\mathbf{p}}_\text{sb}$影响。
+
+不同于旋转中性质\ref{th:velocityrelativity}（速度的相对性），即旋转速度可以直接通过旋转矩阵的微分直接叠加得到，参照系的相对速度不能通过直接叠加变换矩阵的微分。即
+\begin{align}
+\dot{T}_\text{ac}^\text{a} \neq \dot{T}_\text{ab}^\text{a} + \dot{T}_\text{bc}^\text{a} \label{eq:dottaddwrong}
+\end{align}
+其中
+\begin{align}
+\dot{T}_\text{bc}^\text{a} = T_\text{ab} \dot{T}_\text{bc}^\text{b} = T_\text{bc}
+\end{align}
+看一个非常简单的双摆的例子，当两个摆关节都有速度，如果变换矩阵的微分直接叠加就可以得到参照系的速度，那么对末端小球进行分析，得到经过一小段时间后的结果将会是结果2而非结果1，而根据我们的直觉，显然结果1才符合事实。
+
+变换矩阵的微分无法直接叠加的原因在于旋转角速度会导致参照系在不同位置的线速度不同。为了解决这个问题，我们需要引入新的描述运动的方式。
+
+\subsubsection{螺旋理论}
+引入新的描述物体运动的方式之前，我们先对我们研究的物体进行规定。我们研究的对象是刚体（rigid body）。不同于弹性体或柔性体，刚体是不会发生形变的理想刚性体。具体来说，刚体具有以下的性质
+\begin{enumerate}
+\item 刚体上的任何两个位置之间不会发生相对位移
+\item 力在刚体中的传递是瞬间的，没有损失的
+\end{enumerate}
+当然，理想的刚体是不存在的。当现实的材料受到力时，会导致材料内部产生应力（stress），而应力会导致材料的形变（strain）。不仅如此，力在材料中的传播是通过机械波传递的，而机械波具有速度。不过，在我们研究的机器人当中，一般都会采用刚性较高的设计以使这些影响可以忽略不计，至少对于较低精度的应用场景可以忽略不计。因此我们可以安全地假设机器人中的部分都是刚体，并基于这一假设研究刚体的运动。
+
+引入新的描述物体运动的方式之前，我们还要先对我们想要的这种描述方式提出一些展望和要求，即我们遇到了什么问题，希望这种描述解决什么问题。
+
+首先，式子(\ref{eq:dottaddwrong})告诉我们，变换矩阵的微分无法叠加而得到某个参照系或者刚体的运动速度。那么我们的第一个诉求就是希望新的描述方式可以使得相对速度可以叠加。毕竟速度的叠加对我们来说是符合直觉的，是理所应当的。
+
+第二，根据我们之前在研究旋转矩阵与矩阵指数的时候，我们建立了旋转矩阵的微分与旋转矩阵的关系$\dot{R}=[\mathbf{w}]R$，从而得到$R=e^{[\hat{\mathbf{w}}]\theta}$，即一种快速将旋转矩阵与轴角表示法联系起来的数学工具。我们希望能把这一特点也在新的运动描述方法中体现，这种描述方式包含$\mathbf{x}$与$\theta$，使得
+\begin{align}
+\dot{T} = [\mathbf{x}]T\\
+T = e^{[\mathbf{x}]\theta}
+\end{align}
+
+考虑到之前讨论式子(\ref{eq:dottaddwrong})无法成立的原因是因为旋转导致的线速度在不同位置不同，我们新的描述必然是会将旋转的速度和平移的速度进行解耦的。观察式子(\ref{eq:dottsb})，我们可以发现，对于空间中的一个参照系的速度可以分为角速度（velocity）和线速度（linear velocity），其中角速度我们已经研究过了，可以通过$\hat{\mathbf{w}}\dot{\theta}$来描述。按照解耦线速度的直觉，我们可以将线速度分为由旋转引起的速度和与旋转无关的速度。
+
+将问题整理并重新描述即，已知参照系的方位$T$和速度$\dot{T}$，能否获得将参照系的中与旋转有关的速度和与旋转无关的速度解耦？由于我们从$T$中的$R$和$\dot{T}$中的$\dot{R}$可以获得角速度，$\dot{T}$中的$dot{\mathbf{p}}$即是线速度。因此问题可以被重新描述为：如果我们知道参照系的角速度和线速度，能否至将线速度解耦为与旋转无关的速度和与旋转有关的速度？
+
+[TODO:图片]如图所示，根据直觉，我们不难得知，由旋转引起的速度垂直于旋转半径和旋转轴，为切向速度（tangential velocity），那么线速度除去切向速度即为与旋转无关的平移速度（translational velocity）。但问题在于，旋转轴位置的不同会导致某一点（比如说参照系的原点）相对于旋转轴旋转半径的变化，那么对应的切向速度就会随之变化。
+
+那么我们能否让这个旋转轴位置确定并且唯一？而且既然旋转轴的位置会让切向速度和平移速度发生此消彼长的变化，那么能否干脆直接让平移速度完全与旋转无关，即与旋转轴同向，从而完成彻底的解耦？
+
+答案是可以的，毕竟无巧不成书。其实将问题描述到这里，答案应该已经显而易见了——我们只要把线速度按旋转轴方向和垂直于旋转轴的平面方向分解即可。分解得与旋转轴平行的速度即为平移速度，剩下的即为切向速度。这样的分解对于确定的角速度和线速度来说是确定且唯一的。对于切向速度，由于我们知道角速度，那么我们可以通过
+\begin{align}
+\mathbf{v}_\text{tan} = \mathbf{w} \times \mathbf{r} \label{eq:tangentialvelocity}
+\end{align}
+去求$\mathbf{r}$，即
+\begin{align}
+\mathbf{r} = \frac{||\mathbf{v}_\text{tan}||}{||\mathbf{w}||} (\frac{\mathbf{v}_\text{tan}}{||\mathbf{v}_\text{tan}||} \times \frac{\mathbf{w}}{||\mathbf{w}||})
+\end{align}
+那么$\mathbf{r}$从参照系原点出发指向的位置即为旋转轴的位置。对于角速度或者切向速度为零的分别单独讨论即可，过程比较显然不在此赘述。
+
+这样一来，我们就成功将参照系线速度的平移速度和切向速度解耦了，而这也就意味着，我们将参照系的旋转与平移解耦了。那么，我们把一个参照系的运动解耦了，参照系的运动与刚体的运动之间有什么联系呢？实际上，参照系的运动就是空间中一个有方向的点的运动，那么有方向的点的运动和刚体的运动之间有什么联系？
+
+我们观察刚体的运动，不难发现，刚体上任意一点的角速度和平移速度处处相等，不同的是因为距离旋转轴半径不同导致的切向速度不同。不妨来看刚体上的任意两个点。假如我们观察一个点，知道了这个点的角速度和线速度，那么我们就能从刚刚的方法中得到其旋转轴的位置，也知道了其切向速度和平移速度。通过旋转轴的位置，角速度和平移速度，我们也就能知道刚体上任意一点的速度。也就是说，我们只需要知道刚体上一点的速度，就能知道整个刚体上任何点的速度。
+
+也就是说，我们如果要描述刚体的运动，我们只需要任意取刚体上的一点描述其角速度和线速度就可以了。甚至这个点可以不在刚体上，而在刚体之外，只要这个点在空间中是跟随刚体一起运动的即可。三维空间中的角速度和线速度分别需要三个自由度来表达。其中角速度是我们很熟悉的$\mathbf{w}\dot{\theta}$。我们来看线速度，显然如果要把线速度写成与$\dot{\theta}$有关的形式，肯定得把切向速度和平移速度分开处理。首先是切向速度，切向速度需要半径才能确定大小，而半径需要我们确定研究的点，因此我们任取一个点O作为研究点，旋转轴到点O的半径记作$\mathbf{r}$，那么切向速度即如式子(\ref{eq:tangentialvelocity})为$\mathbf{w}\times \mathbf{r}$。我们再来看平移速度，由于平移速度与旋转速度的大小没有相关性，因此我们要引入一个类似螺距（pitch）的系数$h$，那么平移速度即为$h\mathbf{w}$，因此线速度为平移速度与切向速度之和，即
+\begin{align}
+\mathbf{v} = h\mathbf{w} +  \mathbf{w}\times \mathbf{r} = (h\hat{\mathbf{w}} + \hat{\mathbf{w}} \times \mathbf{r}) \dot{\theta} \label{eq:linearvelocity}
+\end{align}
+
+我们把旋转轴到点O的半径记作$\mathbf{r}$，那么也可以把点O到旋转轴记作$\mathbf{q}$。实际上得益于叉乘的性质，点O指向旋转轴的任意一点所形成的向量记作$\mathbf{q}$时，都有
+\begin{align}
+\mathbf{v} = h\mathbf{w} +  \mathbf{w}\times \mathbf{r} = h\mathbf{w} +  \mathbf{q} \times \mathbf{w} = (h\hat{\mathbf{w}} +\mathbf{q} \times \hat{  \mathbf{w}}) \dot{\theta} \label{eq:linearvelocity2}
+\end{align}
+
+把式子(\ref{eq:linearvelocity2})和角速度打包写在一起，并记作$\mathbf{u}
+\in\mathbb{R}^6$  
+\begin{align}
+\mathbf{u} = \begin{bmatrix}
+\mathbf{w} \\ \mathbf{v} 
+\end{bmatrix} = \begin{bmatrix}
+\hat{\mathbf{w}} \\  h\hat{\mathbf{w}} + \mathbf{q}\times \hat{\mathbf{w}} 
+\end{bmatrix} \dot{\theta} \label{eq:screwrepresentation}
+\end{align}
+
+我们观察刚体的运动，其绕着一根轴旋转并前进（平移运动）的样子很像一个螺丝，因此我们也把这个旋转轴称为螺旋轴（screw axis），把绕着螺旋轴的运动称为螺旋运动（twist），简称旋动。因此$\mathbf{u}$就是描述刚体上某一个点的旋动，而对应的螺旋轴我们记作$\hat{\mathbf{u}}$，即
+\begin{align}
+\hat{\mathbf{u}} = \begin{bmatrix}
+\hat{\mathbf{w}} \\  h\hat{\mathbf{w}} + \mathbf{q}\times \hat{\mathbf{w}} 
+\end{bmatrix} \label{eq:screwaxis}
+\end{align}
+
+不过，考虑当刚体的角速度为0时，$\mathbf{w}$为0会导致$h$为无穷大，那么这时我们定义
+\begin{align}
+\mathbf{u} = \hat{\mathbf{u}}\dot{\theta} = \begin{bmatrix}
+\mathbf{0} \\ \hat{\mathbf{v}}
+\end{bmatrix}\dot{\theta}
+\end{align}
+其中$\hat{\mathbf{v}} = \mathbf{v}/||\mathbf{v}||$，$\dot{\theta} = ||\mathbf{v}||$。
+
+从式子(\ref{eq:screwrepresentation})来看，我们好像什么都没表示，因为$\mathbf{v}$就是某点的线速度。其实不然，式子(\ref{eq:screwrepresentation})的意义在于切换参照系。既然空间中任何一点都可以作为研究某个刚体运动的点，那么当我们要把旋动$\mathbf{u}$表达在某个参照系中时，直接把参照系的原点作为研究点来写旋动即可。以机体参照系$\{\text{b}\}$为例，如果我们记$\{\text{b}\}$的原点为B，记螺旋轴上任意一点为Q，记固定参照系$\{\text{s}\}$的原点为S，此时$\mathbf{q}_\text{b} = \overrightarrow{\text{BQ}}_\text{b}$，$\mathbf{q}_\text{s} = \overrightarrow{\text{SQ}}_\text{s}$，有
+\begin{align}
+\mathbf{u}_\text{\underline{\underline{b}}b} &= 
+\begin{bmatrix}
+\mathbf{w}_\text{\underline{\underline{b}}b} \\ \mathbf{v}_\text{\underline{\underline{b}}b}
+\end{bmatrix}
+=\begin{bmatrix}
+\mathbf{w}_\text{\underline{\underline{b}}b} \\ h\mathbf{w}_\text{\underline{\underline{b}}b} + \overrightarrow{\text{BQ}}_\text{b} \times \mathbf{w}_\text{\underline{\underline{b}}b}
+\end{bmatrix} \\
+\mathbf{u}_\text{sb} &= 
+\begin{bmatrix}
+\mathbf{w}_\text{sb} \\ \mathbf{v}_\text{sb}
+\end{bmatrix} = \begin{bmatrix}
+\mathbf{w}_\text{sb} \\ h\mathbf{w}_\text{sb} + \overrightarrow{\text{SQ}}_\text{s} \times \mathbf{w}_\text{sb}
+\end{bmatrix} \label{eq:twistinspatialframe}
+\end{align}
+考虑到$\overrightarrow{\text{SQ}} = \overrightarrow{\text{SB}} + \overrightarrow{\text{BQ}}$
+因此式子(\ref{eq:twistinspatialframe})可被改写为
+\begin{align}
+\mathbf{u}_\text{sb} &= \begin{bmatrix}
+\mathbf{w}_\text{sb} \\ h\mathbf{w}_\text{sb} + \overrightarrow{\text{BQ}}_\text{s} \times \mathbf{w}_\text{sb}
+\end{bmatrix} + \begin{bmatrix}
+\mathbf{0} \\   \overrightarrow{\text{SB}}_\text{s} \times \mathbf{w}_\text{sb}
+\end{bmatrix} = \begin{bmatrix}
+R_\text{sb} \mathbf{w}_\text{\underline{\underline{b}}b} \\ 
+R_\text{sb} \mathbf{v}_\text{\underline{\underline{b}}b}
+\end{bmatrix} + \begin{bmatrix}
+\mathbf{0} \\ 
+[\mathbf{p}_\text{sb}]R_\text{sb}\mathbf{w}_\text{\underline{\underline{b}}b}
+\end{bmatrix} \nonumber \\
+&= \begin{bmatrix}
+R_\text{sb} & 0\\
+[\mathbf{p}_\text{sb}]R_\text{sb} & R_\text{sb}
+\end{bmatrix}\begin{bmatrix}
+\mathbf{w}_\text{\underline{\underline{b}}b} \\ \mathbf{v}_\text{\underline{\underline{b}}b}
+\end{bmatrix} \label{eq:deriveubbusb}
+\end{align}
+我们注意式子(\ref{eq:deriveubbusb})中左侧矩阵。对于$T_\text{ab}=T(R_\text{ab},\mathbf{p}_\text{ab})$，定义
+\begin{align}
+[\text{Ad}_{T_\text{ab}}] = \begin{bmatrix}
+R_\text{ab}&0\\
+[\mathbf{p}_\text{ab}]R_\text{ab}&R_\text{ab}
+\end{bmatrix}
+\end{align}
+便可重写式子(\ref{eq:deriveubbusb})为
+\begin{align}
+\mathbf{u}_\text{sb} = [\text{Ad}_{\text{T}_\text{sb}}]  \mathbf{u}_\text{\underline{\underline{b}}b}
+\end{align}
+
+这种以螺旋轴为核心描述运动的方式称为螺旋理论（screw theory）。在有些教材中将screw theory翻译作旋量理论。考虑到旋量（curl）在微积分中已经有明确定义，为了区别，本讲义翻译为螺旋理论。螺旋理论的意义在于：将刚体的运动（即旋动）进行旋转和平移的解耦。当有多个旋动的效果要进行叠加时，需要选择一个点，分别研究各个旋动中的旋转在这个点造成的影响，然后再叠加这些影响，结合与旋转无关的平移效果叠加，这才得到了这个点在空间中的运动状态。
+
+从螺旋理论中我们还可以得知，由于我们厘清了旋转与平移的关系，因此结合刚体的性质，如果我们获得了刚体中一个点的旋动，那么我们就能获得刚体上任意一点的旋动，或者与刚体同步的空间中的任意一点的旋动。
+
+\subsubsection{关于螺旋理论的定于与性质}
+\begin{mydefinition}
+刚体相对任意参照系$\{\textnormal{a}\}$发生运动时，随刚体一起运动的机体参照系$\{\textnormal{b}\}$，定义旋动$\mathbf{u}\in \mathbb{R}^6$
+\begin{align*}
+\mathbf{u}_\textnormal{ab}^\textnormal{b} = \begin{bmatrix}
+\mathbf{w}_\textnormal{ab}^\textnormal{b} \\ \mathbf{v}_\textnormal{ab}^\textnormal{b}
+\end{bmatrix}
+\end{align*}
+其中$\mathbf{v}_\textnormal{ab}^\textnormal{b}\in\mathbb{R}^3$为$\{\textnormal{b}\}$的原点相对于$\{\textnormal{a}\}$的线速度在$\{\textnormal{b}\}$中表达。$\{\textnormal{b}\}$可以位于空间中的任何位置，只要和刚体同步即可。
+\end{mydefinition}
+
+\begin{mydefinition}
+定义$\hat{\mathbf{u}}\in\mathbb{R}^6$关于旋动$\mathbf{u}=[\mathbf{w}\; \mathbf{v}]^T$，有
+\begin{align*}
+\hat{\mathbf{u}} = 
+\begin{cases}
+    \mathbf{0},& \mathbf{w} = \mathbf{0} \textnormal{ 且 } \mathbf{v} = \mathbf{0} \\
+    \mathbf{u}/||\mathbf{v}||, & \mathbf{w} = \mathbf{0} \textnormal{ 且 } \mathbf{v} \neq \mathbf{0} \\
+    \mathbf{u}/||\mathbf{w}||, & \mathbf{w} \neq \mathbf{0}  \\
+\end{cases}
+\end{align*}
+且$\mathbf{u} = \hat{\mathbf{u}}\dot{\theta}$
+\end{mydefinition}
+
+\begin{mydefinition}
+对于$T_\textnormal{ab}=T(R_\textnormal{ab},\mathbf{p}_\textnormal{ab})$，定义
+\begin{align*}
+[\textnormal{Ad}_{T_\textnormal{ab}}] = \begin{bmatrix}
+R_\textnormal{ab} & 0\\
+[\mathbf{p}_\textnormal{ab}]R_\textnormal{ab} & R_\textnormal{ab}
+\end{bmatrix}
+\end{align*}
+\end{mydefinition}
+
+\begin{mytheorem}
+$\dot{T}_\textnormal{ab}  = \begin{bmatrix}
+\dot{R}_\textnormal{ab} & \dot{\mathbf{p}}_\textnormal{ab}\\
+0 & 0
+\end{bmatrix} $ \label{th:dotTab}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\dot{T}_\textnormal{ba}  = \begin{bmatrix}
+\dot{R}_\textnormal{ab}^T & -(\dot{R}_\textnormal{ab})^T \mathbf{p}_\textnormal{ab} - R_\textnormal{ab}^T \dot{\mathbf{p}}_\textnormal{ab} \\
+0 & 1
+\end{bmatrix} $ \label{th:dotTba}
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\textnormal{Ad}_{T_\textnormal{ab}}][\textnormal{Ad}_{T_\textnormal{ba}}] = I $
+\end{mytheorem}
+
+\begin{mytheorem}
+$\mathbf{u}_\textnormal{ab}^\textnormal{c} $ 为$\{\textnormal{b}\}$相对于$\{\textnormal{a}\}$的速度，在与$\{\textnormal{b}\}$同步的参照系$\{\textnormal{c}\}$中的表达，为$\{\textnormal{c}\}$位置的线速度和角速度在$\{\textnormal{c}\}$中表达。\label{th:twistmeaning}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\mathbf{u}_\textnormal{ab}^\textnormal{c} = [\textnormal{Ad}_{T_\textnormal{cd}}]\mathbf{u}_\textnormal{ab}^\textnormal{d} $ \label{th:twistchangeframe}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\hat{\mathbf{u}}_\textnormal{ab}^\textnormal{c} = [\textnormal{Ad}_{T_\textnormal{cd}}]\hat{\mathbf{u}}_\textnormal{ab}^\textnormal{d} $
+\end{mytheorem}
+
+\begin{mytheorem}
+$\mathbf{u}_\textnormal{ab}^\textnormal{a} = \mathbf{u}_\textnormal{ac}^\textnormal{a} + \mathbf{u}_\textnormal{cb}^\textnormal{a} $ \label{th:relativityoftwist}
+\end{mytheorem}
+
+\begin{mytheorem}
+$\mathbf{u}_\textnormal{ba}^\textnormal{b} = -\mathbf{u}_\textnormal{ab}^\textnormal{b} $ \label{th:reversetwist}
+\end{mytheorem}
+
+\begin{mytheorem}
+与刚体同步的一点P，其坐标在$\{\textnormal{b}\}$中记作$\mathbf{p}_\textnormal{bP}$，若刚体的速度为$\mathbf{u}_\textnormal{ab}^\textnormal{b}$，那么这个点的线速度表达在$\{\textnormal{b}\}$中为
+\begin{align*}
+\mathbf{v}_\textnormal{aP}^\textnormal{b}=\mathbf{v}_\textnormal{ab}^\textnormal{b} + \mathbf{w}_\textnormal{ab}^\textnormal{b} \times \mathbf{p}_\textnormal{bP} 
+\end{align*}
+\label{th:pointlinearvelocity}
+\end{mytheorem}
+\subsubsection{旋动与矩阵指数}
+在旋转中，我们将矩阵写成了$\dot{R}=AR=[\hat{\mathbf{w}}\dot{\theta}]R$的形式，并且通过解微分方程的形式得到了$R=e^{[\hat{\mathbf{w}}\theta]}$。那么我们能否在变换矩阵上获得同样的结论呢？
+
+即我们能否这样的关系：$\dot{T} = AT = [\hat{\mathbf{u}}\dot{\theta}]T$，使得$T = e^{[\hat{\mathbf{u}}\theta]}$呢？
+
+我们分析固定参照系$\{\text{s}\}$和机体参照系$\{\text{b}\}$，观察性质\ref{th:dotTab}，我们不难发现，其实$\dot{\mathbf{p}_\text{sb}} = \mathbf{v}_\text{sb}$，即$\{\text{b}\}$的原点相对于$\{\text{s}\}$即$\{\text{b}\}$相对于$\{\text{s}\}$的线速度。根据性质\ref{th:twistchangeframe}，我们可得
+\begin{align}
+\mathbf{u}_\text{sb}^\text{s} = [\text{Ad}_{T_\text{sb}}]\mathbf{u}_\text{\underline{\underline{b}}b}=\begin{bmatrix}
+\mathbf{w}_\text{sb} \\
+[\mathbf{p}_\text{sb}]\mathbf{w}_\text{sb} + \mathbf{v}_\text{sb}
+\end{bmatrix}
+\end{align}
+
+此时要使$\dot{T}_\text{sb} = [\mathbf{u}_\text{sb}^\text{s}]T_\text{sb}$，仅有
+\begin{align}
+[\mathbf{u}_\text{sb}^\text{s}]=\begin{bmatrix}
+[\mathbf{w}_\text{sb}^\text{s}] & [\mathbf{v}_\text{sb}^\text{s}] \\
+0 & 0
+\end{bmatrix} \label{eq:brackettwist}
+\end{align}
+
+其实通过直接计算$\dot{T}T^{-1}$得可以得到式子(\ref{eq:brackettwist})。
+
+有了式子(\ref{eq:brackettwist})，便有
+\begin{align}
+\dot{T}_\text{sb} = [\mathbf{u}_\text{sb}^\text{s}]T_\text{sb}
+\end{align}
+那么通过求解微分方程可得
+\begin{align}
+T_\text{sb}(t) = e^{[\mathbf{u}_\text{sb}^\text{s}]}T_\text{sb}(0)
+\end{align}
+即
+\begin{align}
+T(\hat{\mathbf{u}}_\text{sb}, \theta)=e^{[\hat{\mathbf{u}}_\text{sb}^\text{s}]\theta}
+\end{align}
+
+由于计算$e^{[\mathbf{u}]}$在机器人当中并不常见，因此在此不讨论其推导过程。
+
+\subsubsection{旋动与矩阵指数的性质}
+\begin{mydefinition}
+对于$\mathbf{u} = [\mathbf{w}\; \mathbf{v}]\in\mathbb{R}^6$，定义$[\mathbf{u}]$为
+\begin{align*}
+[\mathbf{u}] = \begin{bmatrix}
+[\mathbf{w}] & [\mathbf{v}]\\
+0 & 0
+\end{bmatrix}
+\end{align*}
+\end{mydefinition}
+
+\begin{mytheorem}
+对于任意参照系$\{\textnormal{a}\}$和机体参照系$\{\textnormal{b}\}$，当$\{\textnormal{b}\}$下相对$\{\textnormal{a}\}$发生关于螺旋轴$\hat{\mathbf{u}}_\textnormal{ab}^\textnormal{a}$的旋动，旋动角度为$\theta$，则
+\begin{align*}
+T(\theta)=e^{[\hat{\mathbf{u}}_\textnormal{ab}^\textnormal{a}]\theta}T_\textnormal{ab}(0) 
+\end{align*} \label{th:transformationexponential}
+\end{mytheorem}
+
+\begin{mytheorem}
+$e^{[\hat{\mathbf{u}}_\textnormal{ab}^\textnormal{a}]\theta}T_\textnormal{ab}(0) = T_\textnormal{ab}(0)e^{[\hat{\mathbf{u}}_\textnormal{ab}^\textnormal{b}]\theta}$ \label{th:transformationexponentialbodyframe}
+\end{mytheorem}
+
+\begin{mytheorem}
+关于螺旋轴$\hat{\mathbf{u}}$的旋动，旋动角度为$\theta$，描述其运动变化对应的变换矩阵为
+\begin{align*}
+T(\hat{\mathbf{u}}, \theta)=e^{[\hat{\mathbf{u}}]\theta}
+\end{align*}
+\end{mytheorem}
+
+\begin{mytheorem}
+$e^{[\hat{\mathbf{u}}](\theta_1+\theta_2)} = e^{[\hat{\mathbf{u}}]\theta_1}e^{[\hat{\mathbf{u}}]\theta_2}$[有待验证]
+\end{mytheorem}
+
+\begin{mytheorem}
+$T(\hat{\mathbf{u}}, \theta_1+\theta_2) =T(\hat{\mathbf{u}}, \theta_1)T(\hat{\mathbf{u}}, \theta_2) $ [有待验证]
+\end{mytheorem}
+
+\begin{mytheorem}
+$\dot{T}_\textnormal{ab} = [\mathbf{u}_\textnormal{ab}^\textnormal{a}]T_\textnormal{ab}$ 
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\mathbf{u}_\textnormal{ab}^\textnormal{a}] = \dot{T}_\textnormal{ab}T_\textnormal{ab}^{-1}$ 
+\end{mytheorem}
+
+\begin{mytheorem}
+$[\mathbf{u}_\textnormal{ab}^\textnormal{b}] = T_\textnormal{ab}^{-1} \dot{T}_\textnormal{ab}$ 
+\end{mytheorem}
+
+\begin{mytheorem}
+$T[\mathbf{u}]T^{-1} = [[\textnormal{Ad}_{T}]\mathbf{u}]$ 
+\end{mytheorem}
+
+\begin{mytheorem}
+对于螺旋轴$\hat{\mathbf{u}} = [\hat{\mathbf{w}} \; \hat{\mathbf{v}}]^T$ [TODO：hat的标记法则]
+\begin{align*}
+T=T(\hat{\mathbf{u}}, \theta)=e^{[\hat{\mathbf{u}}]\theta} = \begin{bmatrix}
+e^{[\hat{\mathbf{w}}]\theta} & (I\theta+(1-\cos\theta)[\hat{\mathbf{w}}]+(\theta-\sin\theta)[\hat{\mathbf{w}}]^2)\hat{\mathbf{v}}\\
+0 & 1
+\end{bmatrix} 
+\end{align*}
+\end{mytheorem}
+
+\end{document}

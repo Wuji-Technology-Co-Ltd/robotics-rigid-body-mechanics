@@ -1,0 +1,17 @@
+\documentclass[12pt, a4paper, article, UTF8]{ctexart}
+\usepackage[subpreambles=true]{standalone}
+\usepackage{import}
+\begin{document}
+\section{讲义概述}
+我们为什么要研究robotics？我想这个问题应该不需要我来回答。你打开这本讲义的时候，应该自己心里有一定的答案。Robot的形态和种类是很丰富的，其中每一种都值得单独写一本书或很多本书。我们研究的重心是多关节机器人，比如industrial robot、limbed robot，其中包括open-chain robot和包含close close的robot。当然，无论形态如何变化，robot一定是能运动的，是能产生motion的，是能对外做功的。
+
+既然涉及到运动，做功，那么我们就要研究其运动和做功的规律。这就涉及到了dynamics。Dynamics是研究一切运动及其变化的基础。我们研究的robot dynamics不是柔性机构，而是具有high rigidity的rigid body dynamics。Rigid body在运动和做功的过程当中，不会发生形变。
+
+Robot的dynamics到最后总会转化为一种canonical form，即
+\begin{align}
+\tau = M(\theta)\ddot{\theta} + C(\theta,\dot{\theta})+g(\theta) \label{eq:canonicaldynamics}
+\end{align}
+这说白了，就是更加复杂的牛顿第二定律，即$F=ma$，其中$\tau$为input force，$M(\theta)$为mass，$\ddot{\theta}$为acceleration，$C(\theta,\dot{\theta})$为由于non-inertial frame造成的Coriolis force，$g(\theta)$为gravity。
+
+我们研究rigid body dynamics，就是为了能够准确地描述$F=ma$，了解force与input force、position、velocity、acceleration的之间的相互关系以便我们可以将这个模型运用到后续的control和planning。
+\end{document}
